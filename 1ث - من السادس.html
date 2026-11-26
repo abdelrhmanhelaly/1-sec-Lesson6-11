@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي العلوم المتكاملة - الصف الأول الثانوي (1ث)</title>
+    <!-- مكتبات التصدير والمؤثرات البصرية -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            /* النمط الداكن العصري (الافتراضي والأساسي) */
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%);
+            --card-bg: #111827;
+            --text-main: #f9fafb;
+            --text-muted: #a5b4fc;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --option-bg: #1f2937;
+            --option-border: #374151;
+            --status-bg: #182234;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            --header-gradient: linear-gradient(90deg, #818cf8, #38bdf8);
+        }
+
+        body.theme-vibrant {
+            /* النمط الملون */
+            --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f5f3ff 50%, #ecfdf5 100%);
+            --card-bg: rgba(255, 255, 255, 0.94);
+            --text-main: #1e1b4b;
+            --text-muted: #4338ca;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --option-bg: #f8faff;
+            --option-border: #c7d2fe;
+            --status-bg: #eef2ff;
+            --shadow: 0 15px 35px rgba(79, 70, 229, 0.15);
+            --header-gradient: linear-gradient(90deg, #4f46e5, #06b6d4);
+        }
+
+        body.theme-light {
+            /* النمط الأبيض */
+            --bg-gradient: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --option-bg: #ffffff;
+            --option-border: #e2e8f0;
+            --status-bg: #f1f5f9;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --header-gradient: linear-gradient(90deg, #2563eb, #3b82f6);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 820px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .theme-switcher {
+            display: flex;
+            gap: 6px;
+            background: var(--status-bg);
+            padding: 5px;
+            border-radius: 30px;
+            border: 1px solid var(--option-border);
+        }
+
+        .theme-btn {
+            border: none;
+            background: none;
+            font-size: 0.88rem;
+            padding: 5px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .theme-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px dashed var(--option-border);
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+        }
+
+        header h1 {
+            background: var(--header-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.55rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .designer-tag {
+            background: var(--status-bg);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.88rem;
+            display: inline-block;
+            font-weight: bold;
+            border: 1px solid var(--option-border);
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: var(--status-bg);
+            padding: 12px 16px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            border: 1px solid var(--option-border);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .badge-score { color: #10b981; }
+        .badge-lives { color: #f87171; }
+        .badge-skips { color: #fbbf24; }
+
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            scrollbar-width: none;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
+
+        .cat-btn {
+            white-space: nowrap;
+            background: var(--status-bg);
+            border: 1px solid var(--option-border);
+            padding: 9px 15px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .cat-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .cat-btn.summary-btn {
+            border: 1.8px solid #a855f7;
+            color: #c084fc;
+        }
+        .cat-btn.summary-btn.active {
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+            color: #fff;
+        }
+
+        .start-prompt-box {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--status-bg);
+            border: 2px dashed var(--primary);
+            border-radius: 18px;
+            margin-bottom: 20px;
+        }
+
+        .start-prompt-box h3 {
+            color: var(--text-main);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .start-prompt-box p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .btn-start-cat {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 13px 30px;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-start-cat:hover {
+            background: var(--primary-hover);
+            transform: scale(1.03);
+        }
+
+        .question-box {
+            font-size: 1.12rem;
+            line-height: 1.65;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            min-height: 65px;
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            white-space: pre-line;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: var(--option-bg);
+            border: 2px solid var(--option-border);
+            color: var(--text-main);
+            border-radius: 14px;
+            padding: 14px 18px;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            cursor: pointer;
+            text-align: right;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            background: var(--status-bg);
+        }
+
+        .option-btn.correct {
+            background: #064e3b !important;
+            border-color: #10b981 !important;
+            color: #ecfdf5 !important;
+        }
+
+        .option-btn.wrong {
+            background: #7f1d1d !important;
+            border-color: #ef4444 !important;
+            color: #fef2f2 !important;
+            animation: shake 0.3s;
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            min-width: 110px;
+        }
+
+        .btn-skip { background: #78350f; color: #fde68a; }
+        .btn-calc-toggle {
+            background: #312e81;
+            color: #c7d2fe;
+            display: inline-block;
+        }
+        .btn-end { background: #7f1d1d; color: #fecaca; }
+
+        /* نافذة الآلة الحاسبة المنبثقة */
+        .calculator-modal {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 280px;
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 14px;
+        }
+
+        .calc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .calc-display {
+            width: 100%;
+            height: 42px;
+            background: var(--status-bg);
+            border: 1px solid var(--option-border);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: left;
+            padding: 8px;
+            font-size: 1.2rem;
+            font-family: monospace;
+            color: var(--text-main);
+            direction: ltr;
+        }
+
+        .calc-keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .calc-btn {
+            padding: 10px 0;
+            font-size: 1.05rem;
+            font-weight: bold;
+            border-radius: 8px;
+            border: 1px solid var(--option-border);
+            background: var(--status-bg);
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .calc-btn.op { background: #312e81; color: #c7d2fe; }
+        .calc-btn.eq { background: #059669; color: white; grid-column: span 2; }
+        .calc-btn.clear { background: #991b1b; color: #fee2e2; }
+
+        /* ستايل شاشة التلخيص */
+        .summary-container {
+            display: none;
+            max-height: 620px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .summary-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            background: var(--status-bg);
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--option-border);
+        }
+
+        .btn-back-main {
+            background: #dc2626;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .summary-subtabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .sub-btn {
+            background: var(--status-bg);
+            border: 1px solid var(--option-border);
+            padding: 7px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .sub-btn.active {
+            background: #8b5cf6;
+            color: #fff;
+            border-color: #8b5cf6;
+        }
+
+        .summary-item {
+            background: var(--status-bg);
+            border-right: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border-top: 1px solid var(--option-border);
+            border-left: 1px solid var(--option-border);
+            border-bottom: 1px solid var(--option-border);
+        }
+
+        .summary-item h4 {
+            color: var(--primary);
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+
+        .summary-item p {
+            color: var(--text-main);
+            font-size: 0.94rem;
+            line-height: 1.6;
+        }
+
+        .formula-box {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.05rem;
+            direction: ltr;
+            text-align: center;
+            color: #38bdf8;
+            margin: 6px 0;
+            border: 1px dashed var(--option-border);
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* شاشة نهاية اللعبة */
+        .end-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .score-card {
+            background: var(--status-bg);
+            border: 2px solid var(--option-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 15px 0;
+            color: var(--text-main);
+        }
+
+        .score-card .final-score {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .share-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-share {
+            padding: 13px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-whatsapp { background: #25d366; }
+        .btn-facebook { background: #1877f2; }
+        .btn-image { background: #8b5cf6; }
+        .btn-restart { background: var(--primary); margin-top: 5px; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+    </style>
+</head>
+<body class="theme-dark">
+
+    <div class="container">
+        <!-- شريط تغيير المظهر -->
+        <div class="top-bar">
+            <span style="font-size: 0.88rem; font-weight: bold; color: var(--text-muted);">المظهر:</span>
+            <div class="theme-switcher">
+                <button class="theme-btn" id="btn-theme-vibrant" onclick="setTheme('vibrant')">ملون</button>
+                <button class="theme-btn" id="btn-theme-light" onclick="setTheme('light')">أبيض</button>
+                <button class="theme-btn active" id="btn-theme-dark" onclick="setTheme('dark')">داكن</button>
+            </div>
+        </div>
+
+        <!-- ترويسة اللعبة -->
+        <header>
+            <h1>🏆 تحدي العلوم المتكاملة - الصف الأول الثانوي (1ث)</h1>
+            <div class="designer-tag">
+                مصمم اللعبة: أ/ عبد الرحمن عبد الله - 01021779644 | الصف الأول الثانوي (1ث)
+            </div>
+        </header>
+
+        <!-- واجهة التلخيص والمراجعة الشاملة -->
+        <div id="summary-view" class="summary-container">
+            <div class="summary-header-bar">
+                <button class="btn-back-main" onclick="returnToGame()">🔙 العودة للعبة</button>
+                <span style="font-weight: bold; font-size: 0.95rem; color: var(--text-muted);">كراسة المراجعة الشاملة (العلوم المتكاملة 1ث)</span>
+            </div>
+            <div class="summary-subtabs">
+                <button class="sub-btn active" onclick="showSummaryTab('defs', this)">📖 التكيفات والغازات</button>
+                <button class="sub-btn" onclick="showSummaryTab('reasons', this)">💡 الضوء والضغط</button>
+                <button class="sub-btn" onclick="showSummaryTab('devices', this)">🌊 التوازن البيئي</button>
+                <button class="sub-btn" onclick="showSummaryTab('laws', this)">🌍 الغلاف الجوي</button>
+            </div>
+            <div id="summary-content"></div>
+        </div>
+
+        <!-- واجهة الأسئلة -->
+        <div id="game-view">
+            <!-- شريط الأقسام -->
+            <div class="category-tabs" id="category-tabs"></div>
+
+            <!-- شاشة بدء التحدي لكل كاتيجوري -->
+            <div id="cat-start-screen" class="start-prompt-box">
+                <h3 id="cat-start-title">اسم القسم</h3>
+                <p id="cat-start-info">معلومات الأسئلة...</p>
+                <button class="btn-start-cat" onclick="startCategoryQuiz()">▶️ بدء التحدي الآن</button>
+            </div>
+
+            <!-- محتوى الاختبار الفعلي -->
+            <div id="quiz-active-area" style="display: none;">
+                <!-- شريط الحالة (بدون وقت) -->
+                <div class="status-bar">
+                    <span class="badge-score">🏆 النقاط: <span id="score-val">0</span></span>
+                    <span class="badge-lives">❤️ المحاولات: <span id="lives-val">4/4</span></span>
+                    <span class="badge-skips">⏩ التخطي: <span id="skips-val">3/3</span></span>
+                </div>
+
+                <!-- كارت السؤال والخيارات -->
+                <div class="question-box" id="question-text">جارٍ تحميل السؤال...</div>
+                <div class="options-grid" id="options-container"></div>
+
+                <!-- أزرار التحكم -->
+                <div class="actions-bar">
+                    <button class="btn-action btn-skip" id="btn-skip" onclick="skipQuestion()">⏩ تخطي السؤال</button>
+                    <button class="btn-action btn-calc-toggle" id="btn-calc-toggle" onclick="toggleCalculator()">🧮 الآلة الحاسبة</button>
+                    <button class="btn-action btn-end" id="btn-end" onclick="endGame('manual')">🛑 إنهاء التحدي</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- شاشة النتيجة وشهادة التقدير -->
+        <div id="end-view" class="end-screen">
+            <div class="score-card" id="export-card">
+                <h2>شهادة إنجاز التحدي 🎓</h2>
+                <p style="color: var(--text-muted); margin-top: 5px;">العلوم المتكاملة - الصف الأول الثانوي (1ث)</p>
+                <div class="final-score" id="final-score-val">0</div>
+                <p id="evaluation-text" style="font-weight: bold; font-size: 1.15rem; color: #10b981; line-height: 1.6;"></p>
+                <div style="margin-top: 15px; border-top: 1px dashed var(--option-border); padding-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+                    إعداد الأستاذ: عبد الرحمن عبد الله | هاتف: 01021779644 | 1ث
+                </div>
+            </div>
+
+            <!-- خيارات المشاركة والحفظ -->
+            <div class="share-buttons">
+                <button class="btn-share btn-image" onclick="downloadResultImage()">📸 تحميل النتيجة كصورة للستوري</button>
+                <button class="btn-share btn-whatsapp" onclick="shareWhatsApp()">💬 إرسال النتيجة عبر واتساب</button>
+                <button class="btn-share btn-facebook" onclick="shareFacebook()">🌐 نسخ النتيجة للنشر على فيسبوك</button>
+                <button class="btn-share btn-restart" onclick="restartGame()">🔄 إعادة اللعب بأسئلة متجددة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الآلة الحاسبة المنبثقة -->
+    <div class="calculator-modal" id="calculator-modal">
+        <div class="calc-header">
+            <span>آلة حاسبة المعمل 🧮</span>
+            <span style="cursor:pointer;" onclick="toggleCalculator()">✖</span>
+        </div>
+        <input type="text" id="calc-display" class="calc-display" readonly value="0">
+        <div class="calc-keys">
+            <button class="calc-btn clear" onclick="calcClear()">C</button>
+            <button class="calc-btn op" onclick="calcInput('/')">÷</button>
+            <button class="calc-btn op" onclick="calcInput('*')">×</button>
+            <button class="calc-btn op" onclick="calcBackspace()">⌫</button>
+
+            <button class="calc-btn" onclick="calcInput('7')">7</button>
+            <button class="calc-btn" onclick="calcInput('8')">8</button>
+            <button class="calc-btn" onclick="calcInput('9')">9</button>
+            <button class="calc-btn op" onclick="calcInput('-')">-</button>
+
+            <button class="calc-btn" onclick="calcInput('4')">4</button>
+            <button class="calc-btn" onclick="calcInput('5')">5</button>
+            <button class="calc-btn" onclick="calcInput('6')">6</button>
+            <button class="calc-btn op" onclick="calcInput('+')">+</button>
+
+            <button class="calc-btn" onclick="calcInput('1')">1</button>
+            <button class="calc-btn" onclick="calcInput('2')">2</button>
+            <button class="calc-btn" onclick="calcInput('3')">3</button>
+            <button class="calc-btn op" onclick="calcInput('.')">.</button>
+
+            <button class="calc-btn" onclick="calcInput('0')">0</button>
+            <button class="calc-btn eq" onclick="calcCalculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        // نظام المؤثرات الصوتية
+        let audioCtx;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'correct') {
+                    const notes = [659.25, 880];
+                    notes.forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + i * 0.12);
+
+                        gain.gain.setValueAtTime(0, now + i * 0.12);
+                        gain.gain.linearRampToValueAtTime(0.18, now + i * 0.12 + 0.02);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.35);
+
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+
+                        osc.start(now + i * 0.12);
+                        osc.stop(now + i * 0.12 + 0.35);
+                    });
+                } else if (type === 'wrong') {
+                    [160, 120].forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.15);
+
+                        gain.gain.setValueAtTime(0.22, now + idx * 0.15);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.15 + 0.14);
+
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+
+                        osc.start(now + idx * 0.15);
+                        osc.stop(now + idx * 0.15 + 0.14);
+                    });
+                } else if (type === 'win') {
+                    const chord = [523.25, 659.25, 783.99, 1046.50];
+                    chord.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+
+                        gain.gain.setValueAtTime(0, now + idx * 0.1);
+                        gain.gain.linearRampToValueAtTime(0.15, now + idx * 0.1 + 0.03);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.45);
+
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+
+                        osc.start(now + idx * 0.1);
+                        osc.stop(now + idx * 0.1 + 0.45);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio waiting for user click");
+            }
+        }
+
+        // قاعدة بيانات التلخيص الشاملة للعلوم المتكاملة (1ث)
+        const summaryData = {
+            defs: [
+                { title: "التكيفات الأسموزية في الكائنات المائية", desc: "• كائنات المياه العذبة (مثل الأميبا والأسماك العظمية العذبة): يدخل الماء لخلاياها بالأسموزية فتواجه خطر الانتفاخ والانفجار؛ تتخلص الأميبا منه بالفجوة المنقبضة، والأسماك العذبة بإخراج بول مخفف بكميات كبيرة.<br>• الأسماك البحرية العظمية: تفقد الماء للوسط المالح فتشرب كميات كبيرة من ماء البحر وتطرد الأملاح الزائدة عبر خلايا متخصصة في الخياشيم وتخرج بولاً مركزاً قليلاً.<br>• الأسماك الغضروفية (القرش): تحتفظ بتركيزات مرتفعة من اليوريا في دمها وأنسجتها لرفع ضغطها الأسموزي ليعادل ماء البحر ويمنع فقدان الماء." },
+                { title: "تكيفات أسماك الأعماق (سمكة الجليد وسمكة الأفعى)", desc: "• فسيولوجياً: خفض معدل الأيض الأساسي وزيادة تركيز الهيموجلوبين في الدم للتغلب على نقص الأكسجين، وتعديل ضغط الدم.<br>• تركيبياً: أجسام مضغوطة، هياكل عظمية مرنة، وأعين كبيرة جداً للرؤية في الظلام." },
+                { title: "ذوبانية الغازات (O2 و CO2) وتحمض المحيطات", desc: "• العلاقة عكسية بين درجة الحرارة وذوبانية الغازات (تزداد الذوبانية في المياه الباردة وتقل بارتفاع الحرارة).<br>• تزداد الذوبانية في المياه العذبة عنها في المياه المالحة بنسبة 20% إلى 30% بفعل تأثير الأملاح.<br>• زيادة CO2 تسبب تحمض المحيطات وتحول كربونات الكالسيوم غير الذائبة إلى بيكربونات كالسيوم ذائبة مما يذيب أصداف الرخويات (المحار) والشعاب المرجانية ويضعف يرقات شوكيات الجلد، بينما يقل تأثر الهيكل الكيتيني للقشريات (الجمبري)." }
+            ],
+            reasons: [
+                { title: "نفاذ الضوء وألوان الطيف في المياه", desc: "• تقل شدة الضوء تدريجياً بزيادة العمق وتنقسم المناطق الضوئية من أعلى لأسفل إلى: المنطقة المضاءة، المنطقة الشفقية، المنطقة المظلمة.<br>• يُمتص الضوء الأحمر والبرتقالي (الأطوال الموجية الطويلة) أولاً قرب السطح (عند عمق 10 سم تقريباً)، بينما ينفذ اللون الأزرق (قصير الطول الموجي) لأعمق (يصل 1% فقط من الضوء المرئي لعمق 100 م)." },
+                { title: "تأثير الضغط المائي وتكيفات الكائنات", desc: "• يزداد ضغط الماء بمعدل 1 atm لكل 10 أمتار عمقاً، ويُحسب الضغط الكلي بالعلاقة: P_total = P_a + (h / 10) atm.<br>• ضغط ماء البحر أكبر من ضغط الماء العذب عند نفس العمق لزيادة كثافة ماء البحر (ρ) بسبب الأملاح والعوالق.<br>• أغشية خلايا أسماك الأعماق السحيقة (> 2000 م) غنية بالأحماض الدهنية غير المشبعة للحفاظ على سيولتها واستقرارها، وبعضها يمتلك مثانات مملوءة بسوائل غير قابلة للانضغاط بدلاً من الغازات." },
+                { title: "القوانين المستخدمة في مسائل الضغط", formula: "P_total = P_a + P_water  |  F = P × A", desc: "حيث P_a = 1 atm عند السطح، و F القوة الضاغطة بالنيوتن (N)، و P الضغط بوحدة (N/m²)، و A المساحة بالمتر المربع (m²)." }
+            ],
+            devices: [
+                { title: "التوازن البيئي والإثراء الغذائي", desc: "• التوازن البيئي: حالة من الاستقرار الديناميكي تحدث عندما تتفاعل الكائنات الحية مع المكونات غير الحية بطريقة تحفظ استمرارية الحياة.<br>• الإثراء الغذائي: زيادة مفرطة في النيتروجين والفوسفور تسبب ازدهاراً غير طبيعي للطحالب يحجب الضوء ويستنفد الأكسجين فيتدهور النظام المائي." },
+                { title: "دور الأسماك المفترسة والتنمية المستدامة", desc: "• تحمي الأسماك المفترسة الشعاب المرجانية بشكل غير مباشر عبر السيطرة على أعداد قنافذ البحر التي تدمر هيكل الشعاب إذا زادت بشكل غير طبيعي.<br>• التنمية المستدامة: تلبية احتياجات الجيل الحالي دون المساس بقدرة الأجيال المستقبلية على تلبية احتياجاتها." }
+            ],
+            laws: [
+                { title: "طبقات الغلاف الجوي والانقلاب الحراري", desc: "• التروبوسفير: الأكثر كثافة، تحدث بها كافة الظواهر الجوية، تنخفض فيها الحرارة بالارتفاع بمعدل 6.5°C لكل 1 كم حتى التروبوبوز.<br>• الستراتوسفير: تمتد حتى 50 كم (الستراتوبوز)، حركة الهواء فيها أفقية لذا تفضلها الطائرات، وترتفع حرارتها بالارتفاع بسبب امتصاص الأوزون (O3) للأشعة فوق البنفسجية (UV).<br>• الميزوسفير: تحمي الأرض بحرق الشهب والنيازك.<br>• الثرموسفير: ترتفع حرارتها لتتجاوز 2000°C، ويُسمى جزؤها السفلي بالأيونوسفير (يعكس موجات الراديو وتحدث به ظاهرة الشفق القطبي).<br>• الإكسوسفير: سمكه الرأسي حوالي 500 كم، مثالي لوضع الأقمار الصناعية لانعدام الاحتكاك تقريباً." },
+                { title: "احتفاظ الكوكب بغلافه الجوي (سرعة الإفلات)", formula: "V_rms < V_e", desc: "يحتفظ الكوكب بالغاز عندما تكون السرعة الفاعلة لجزيئات الغاز (V_rms) أقل من سرعة الإفلات من جاذبية الكوكب (V_e = 11.2 km/s للأرض). لذلك يندر الهيدروجين (H2) لصغر كتلته وارتفاع سرعته الفاعلة." }
+            ]
+        };
+
+        // بنك الأسئلة الشامل لجميع الملفات الأربعة (1ث) بدون أرقام أسئلة وبدون أ ب ج د
+        const rawQuestionBank = {
+            "التكيفات والغازات (1ث)": [
+                { q: "تولد أسماك السلمون في بيئة المياه العذبة، ثم تهاجر إلى البحار لتقضي معظم حياتها، وعند النضج الجنسي تعود مجدداً إلى الأنهار للتكاثر. ما التصنيف العلمي الدقيق لهذا السلوك، وما الغرض البيولوجي منه؟", correctText: "تكيف سلوكي بهدف التكاثر وحفظ النوع من الانقراض، واستغلال الموارد المتاحة.", wrongOptions: ["تكيف تركيبي يهدف لزيادة مساحة السطح اللازمة لامتصاص الأكسجين.", "تكيف فسيولوجي لرفع تركيز اليوريا في الدم أثناء السباحة في الملوحة العالية.", "تكيف وظيفي للتخلص المباشر من الأملاح الزائدة عبر الخياشيم."] },
+                { q: "كيف تتكيف أسماك الأعماق فسيولوجياً لتجاوز عقبة الانخفاض الحاد والشديد في مستويات الأكسجين في أعماق المحيط؟", correctText: "خفض معدل الأيض الأساسي مع زيادة تركيز الهيموجلوبين في دمها.", wrongOptions: ["رفع معدلات الأيض الخلوي لإنتاج طاقة حركية تزيد من سرعة السباحة.", "ابتلاع كميات هائلة من المياه لتنشيط التبادل الغازي المباشر عبر الجلد.", "اختزان كميات كبيرة من اليوريا في مجرى الدم لرفع الضغط الشرياني."] },
+                { q: "تمتلك الأسماك العظمية تركيباً يُعرف بكيس العوم (المثانة الهوائية). ما الوظيفة الفسيولوجية الجوهرية لهذا التركيب داخل البيئة المائية؟", correctText: "تمكين السمكة من التحكم في الطفو، وضبط العمق الرأسي، والحفاظ على التوازن.", wrongOptions: ["ترشيح الأملاح الزائدة من الدم الشرياني وطردها إلى الوسط المحيط.", "تخزين الغازات الحيوية لاستخدامها في التنفس أثناء السكون في القاع.", "إفراز المادة المخاطية المزلقة لتقليل الاحتكاك وحماية الجسم من الطفيليات."] },
+                { q: "أي من المظاهر التالية يمثل تطبيقاً عملياً لمفهوم «التكيف السلوكي» لدى الأحياء المائية؟", correctText: "الهجرة الموسمية بين البيئات المائية أو إصدار أنماط صوتية للتواصل واستغلال الموارد.", wrongOptions: ["تحور جدران الشرايين والأوردة لتصبح أكثر مرونة ومتانة لمقاومة الضغط الهيدروستاتيكي.", "زيادة الكثافة النوعية للهيموجلوبين في خلايا الدم الحمراء لاستخلاص الأكسجين شحيح التركيز.", "امتلاك مثانة غازية متطورة تمتلئ بالهواء لتنظيم الكثافة النوعية أثناء الطفو."] },
+                { q: "إذا نُقلت عينات من المحار (رخويات) والجمبري (قشريات) إلى حوض مائي مشبع بتركيزات مرتفعة من غاز ثاني أكسيد الكربون، فما التغيرات المتوقعة على الهيكل الخارجي لكل منهما؟", correctText: "تتآكل صدفة المحار المكونة من كربونات الكالسيوم، بينما يقل تأثر الهيكل الكيتيني للجمبري.", wrongOptions: ["يتآكل الهيكل الكيتيني للجمبري، بينما يزداد سمك صدفة المحار نتيجة ترسيب الكولاجين.", "يتحلل الهيكلان معاً بنفس المعدل، نظراً لتماثل صياغتهما الكيميائية من فوسفات الكالسيوم.", "لا يتأثر أي منهما لأن حمض الكربونيك يعمل كطبقة واقية تمنع ذوبان الهياكل."] },
+                { q: "ما السبب العلمي الكامن وراء تميز المياه الباردة باحتوائها على وفرة من الغازات الحيوية المذابة مقارنة بالمياه الدافئة؟", correctText: "العلاقة العكسية بين درجة الحرارة وذوبانية الغازات؛ حيث تزداد الذوبانية بانخفاض الحرارة.", wrongOptions: ["الانعدام التام لتركيزات الأملاح والملوحة في الكتل المائية الباردة.", "التثبيط المطلق لعمليات البناء الضوئي في درجات الحرارة المنخفضة.", "قدرة المياه الباردة على تحويل مركب كربونات الكالسيوم إلى بروتين الكولاجين."] },
+                { q: "أي من الكائنات المائية التالية لا يطرأ على هيكله الخارجي تأثير هدمي مباشر عند تحول كربونات الكالسيوم غير الذائبة إلى بيكربونات كالسيوم قابلة للذوبان؟", correctText: "الجمبري (من القشريات).", wrongOptions: ["الشعاب المرجانية (من اللاسعات).", "قنفذ البحر (من شوكيات الجلد).", "المحار (من الرخويات)."] },
+                { q: "استناداً إلى التحليل البيولوجي لتركيب سمكة الجليد وسمكة الأفعى، ما الاستراتيجية التشريحية المشتركة بينهما لمقاومة الضغط الهيدروستاتيكي المرتفع في الأعماق؟", correctText: "امتلاك أجسام مضغوطة جانبياً لتبديد وتوزيع تأثير الضغط المائي العالي.", wrongOptions: ["الاعتماد على فتحات تنفسية رأسية متطورة لاستنشاق الهواء الجوي المباشر.", "استخدام آلية الفجوات المنقبضة الخلوية لطرد المياه الزائدة أولاً بأول.", "الانتقال الدائم إلى مصبات الأنهار العذبة ذات الضغط المنخفض."] },
+                { q: "علل: تواجه الكائنات الحية التي تقطن بيئات المياه العذبة تهديداً فسيولوجياً مستمراً يتمثل في خطر انتفاخ خلاياها وانفجارها.", correctText: "لأن تركيز الأملاح داخل خلاياها أعلى من الوسط المحيط (الماء العذب)، فينتقل الماء إلى داخل الخلايا بالخاصية الأسموزية باستمرار مما يهددها بالانتفاخ والانفجار.", wrongOptions: ["لأن الضغط الأسموزي للماء العذب أعلى بكثير من الضغط داخل خلاياها فينكمش السيتوبلازم.", "بسبب ارتفاع نسبة الأملاح المذابة في الأنهار والتي تهاجم الجدار الخلوي وتذيبه.", "لأن المياه العذبة تحتوي على تركيز منخفض جداً من غاز الأكسجين المذاب."] },
+                { q: "وضح الآلية الفسيولوجية التي تتبعها الأسماك العظمية البحرية للتغلب على التحدي الأسموزي المزدوج (خطر فقدان الماء المستمر وتراكم الأملاح الزائدة في الأنسجة).", correctText: "تشرب كميات كبيرة من ماء البحر لتعويض الماء المفقود، وتطرد الأملاح الزائدة عبر خلايا إفرازية متخصصة في الخياشيم، وتخرج كميات قليلة من البول المركز.", wrongOptions: ["تمتنع تماماً عن شرب الماء وتخرج كميات كبيرة من البول المخفف لطرد الماء الزائد.", "تحتفظ بتركيزات عالية جداً من اليوريا في دمها لترفع ضغطها الأسموزي فوق ماء البحر.", "تعتمد على الفجوات المنقبضة الخلوية لدفع الأملاح الزائدة خارج الجلد."] },
+                { q: "ماذا يحدث لو انخفض تركيز الهيموجلوبين في دم سمكة الأفعى ليصبح مماثلاً لتركيزه في الأسماك السطحية؟", correctText: "تعجز عن استخلاص الكمية الكافية من الأكسجين شحيح التركيز في الأعماق السحيقة لإتمام عمليات الأيض وإنتاج الطاقة، مما يؤدي لاختناقها وموتها.", wrongOptions: ["تزداد قدرتها على الطفو السريع نحو السطح بسبب انخفاض كثافة الدم.", "تنفجر أوعيتها الدموية نتيجة انخفاض لزوجة الدم تحت الضغط المرتفع.", "تتحول إلى التنفس اللاهوائي الدائم دون أي تأثير على نشاطها الحيوي."] },
+                { q: "قارن بين الدور الإخراجي والفسيولوجي للكلية في سمكة مياه عذبة ونظيرتها في سمكة بحرية مالحة عظمية.", correctText: "في سمكة المياه العذبة: تخرج كميات كبيرة من البول المخفف للتخلص من الماء الزائد | في السمكة البحرية: تخرج كميات قليلة من البول المركز للحفاظ على الماء داخل الجسم.", wrongOptions: ["في سمكة المياه العذبة: تخرج بولاً مركزاً قليلاً | في السمكة البحرية: تخرج بولاً مخففاً بكميات كبيرة.", "في كلا النوعين تقوم الكلية بطرد كل الأملاح الزائدة وإنتاج بول متساوي التركيز.", "في السمكة البحرية تفرز الكلية اليوريا في الدم، بينما في العذبة تخزن الماء في المثانة."] },
+                { q: "وضح كيف تتكامل أنماط التكيف الثلاثة (التركيبية، والسلوكية، والفسيولوجية) في تأمين استمرارية دورة حياة أسماك السلمون.", correctText: "السلوكية: الهجرة بين الأنهار والبحار للتكاثر والغذاء | التركيبية: شكل انسيابي وزعانف ومثانة عوم للسباحة | الفسيولوجية: قدرة الخياشيم والكليتين على ضبط التوازن الأسموزي عند الانتقال بين العذب والمالح.", wrongOptions: ["السلوكية: اختزان اليوريا في الدم | التركيبية: الهجرة الموسمية | الفسيولوجية: امتلاك أجسام مضغوطة.", "السلوكية: إفراز المخاط | التركيبية: تكييف الضغط الأسموزي | الفسيولوجية: الهجرة للتكاثر.", "تعتمد أسماك السلمون على التكيف السلوكي فقط دون حدوث أي تغير فسيولوجي أو تركيبي."] },
+                { q: "هل تتأثر النباتات المائية نفسها بنقص غاز ثاني أكسيد الكربون المذاب من حيث مستويات طاقتها الداخلية؟ فسر إجابتك.", correctText: "نعم تتأثر سلباً؛ لأن غاز ثاني أكسيد الكربون مادة أساسية لعملية البناء الضوئي، فنقصه يقلل إنتاج الجلوكوز وبالتالي يقل مصدر الطاقة الكيميائية الداخلية اللازمة لنموها وعملياتها الحيوية.", wrongOptions: ["لا تتأثر مطلقاً؛ لأن النباتات المائية تحصل على طاقتها مباشرة من أملاح الكالسيوم.", "تزداد مستويات طاقتها الداخلية؛ لأن نقص الغاز يرفع الرقم الهيدروجيني ويسرع التنفس.", "تتحول النباتات المائية إلى كائنات مستهلكة تتغذى على العوالق الحيوانية."] },
+                { q: "علل: انخفاض قيم ذوبانية الغازات الحيوية (الأكسجين وثاني أكسيد الكربون) في بيئة البحر الأحمر مقارنة بنهر النيل عند ثبات درجة الحرارة.", correctText: "لأن مياه البحر الأحمر مالحة وتحتوي على تركيز مرتفع من الأملاح المذابة التي تقلل من ذوبانية الغازات مقارنة بالمياه العذبة لنهر النيل.", wrongOptions: ["لأن عمق نهر النيل أكبر من عمق البحر الأحمر مما يزيد الضغط ويحبس الغازات.", "بسبب انعدام الكائنات المنتجة (الطحالب) في نهر النيل تماماً.", "لأن كثافة مياه نهر النيل أعلى من كثافة مياه البحر الأحمر."] },
+                { q: "تتوقف الأسماك عن أنشطتها الحيوية كالصيد والسباحة عند حرمانها من غاز الأكسجين المذاب. فسر هذه الظاهرة فسيولوجياً.", correctText: "لأن غاز الأكسجين ضروري لإتمام عملية التنفس الخلوي (أكسدة الغذاء) داخل خلاياها لإنتاج الطاقة اللازمة للانقباض العضلي والسباحة والصيد.", wrongOptions: ["لأن غاز الأكسجين هو المسؤول عن ملء المثانة الهوائية لرفع السمكة نحو السطح.", "لأن نقص الأكسجين يؤدي إلى تجمد السوائل داخل الأوعية الدموية للسمكة.", "لأن الأكسجين يدخل مباشرة في بناء كربونات الكالسيوم المكونة لهيكلها العظمي."] },
+                { q: "عند نقل خلية أميبا (كائن وحيد الخلية) من بيئة مياه عذبة نقية إلى بيئة مائية ذات ضغط أسموزي مرتفع جداً يتجاوز ضغطها الخلوي الداخلي، ما التغير الفسيولوجي المتوقع لنشاط الفجوة المنقبضة؟", correctText: "يتثبط نشاط الفجوة المنقبضة أو ينعدم؛ لتوقف التدفق الأسموزي للماء نحو الداخل.", wrongOptions: ["يزداد معدل اندفاع الفجوة نحو الغشاء الخلوي لتفريغ المحتوى وتجنب الانفجار.", "تتسع الفجوة المنقبضة تدريجياً نتيجة تدفق الماء المفرط حتى تمزق السيتوبلازم.", "تتحول الفجوة الوظيفية مباشرة إلى تراكيب خيشومية خلوية متخصصة لإفراز الأملاح."] },
+                { q: "عينة من مياه بحيرة عذبة تحتوي على حجم محدد من الغازات الحيوية المذابة عند درجة حرارة 20°C. إذا نُقلت عينة مماثلة تماماً في الحجم والظروف إلى مياه المحيط المالح، فما النسبة التقريبية المتوقعة لانخفاض ذوبانية غازي الأكسجين وثاني أكسيد الكربون؟", correctText: "تنخفض الذوبانية بنسبة تتراوح تقريباً بين 20% إلى 30% بفعل تأثير الأملاح المذابة.", wrongOptions: ["تنخفض ذوبانيتهما بشكل هائل بمقدار 500%.", "تنخفض معدلات الذوبانية بنسبة مطلقة تصل إلى 50%.", "ترتفع نسبة الذوبانية بمقدار 20% نتيجة لظهور قوى التجاذب الأيوني."] },
+                { q: "كيف تؤثر التداعيات الكيميائية الناتجة عن زيادة تركيز غاز ثاني أكسيد الكربون في الوسط المائي على كل من المحار وأسماك البلطي؟", correctText: "تعوق التكلس وتذيب أصداف المحار، وتسبب خللاً فسيولوجياً في توازن الكالسيوم يضعف نمو البلطي.", wrongOptions: ["تزيد من كفاءة الترسيب الكلسي في صدفة المحار وتضاعف من الكتلة الحيوية للبلطي.", "تحول التركيب الهيكلي للمحار إلى كيتين، بينما تحور عظام البلطي إلى غضاريف كولاجينية.", "يغيب التأثير تماماً عن كلا الكائنين لعدم وجود أي تفاعل كيميائي بين الأملاح والغازات."] },
+                { q: "علل فسيولوجياً: احتفاظ أسماك القرش بتركيزات مرتفعة جداً من مركب اليوريا داخل أنسجتها وسوائل جسمها.", correctText: "لرفع الضغط الأسموزي لسوائل جسمها وأنسجتها ليعادل أو يفوق الضغط الأسموزي لماء البحر المالح، مما يمنع فقدان الماء من جسمها بالخاصية الأسموزية.", wrongOptions: ["للتخلص من الأكسجين الزائد في الدم وتحويله إلى طاقة حركية.", "لتقليل كثافة جسمها وزيادة قدرتها على الطفو بدون مثانة هوائية.", "لحماية هيكلها الغضروفي من الذوبان بفعل حمض الكربونيك."] },
+                { q: "قارن بين التكيف التشريحي (التركيبي) لكل من سمكة الجليد وسمكة الأفعى في مواجهة الضغط الهيدروستاتيكي الضخم في الأعماق.", correctText: "كلاهما يمتلك أجساماً مضغوطة لتوزيع وتحمل الضغط الهائل، وتتميز سمكة الأفعى بهياكل عظمية مرنة، بينما تتميز أسماك الأعماق السحيقة كسمكة الجليد بأعين كبيرة جداً وغياب المثانات الهوائية الغازية.", wrongOptions: ["سمكة الجليد تمتلك مثانة هوائية ضخمة، بينما سمكة الأفعى تمتلك صدفة كلسية صلبة.", "سمكة الجليد تتنفس الهواء الجوي عبر فتحة رأسية، بينما سمكة الأفعى تعتمد على الفجوات المنقبضة.", "كلاهما يمتلك هيكلاً عظمياً صلباً جداً وعالي الكثافة لمنع انضغاط الخلايا."] },
+                { q: "علل: تُعد ظاهرة «تحمض المحيطات» سبباً مباشراً في التناقص الحاد لمعدلات بقاء يرقات شوكيات الجلد والرخويات.", correctText: "لأن ذوبان كميات كبيرة من ثاني أكسيد الكربون يكوّن حمض الكربونيك الذي يقلل الرقم الهيدروجيني ويحول كربونات الكالسيوم غير الذائبة إلى بيكربونات كالسيوم ذائبة، مما يعوق تكوين هياكل وأصداف اليرقات ويسبب تآكلها وموتها.", wrongOptions: ["لأن تحمض المحيطات يرفع درجة حرارة الماء إلى درجة الغليان فيقتل اليرقات.", "لأن زيادة الحموضة تحول كربونات الكالسيوم إلى مادة الكيتين السامة لليرقات.", "لأن حمض الكربونيك يمنع نفاذ الضوء الأزرق تماماً في أول 10 سم من السطح."] },
+                { q: "تختلف الدلافين عن الأسماك العظمية في العضو والميكانيكية التشريحية المستخدمة في عملية التبادل الغازي (التنفس)، على الرغم من معيشتهما المشتركة في نفس البيئة المائية. أي الخيارات التالية يصف بدقة هذا التكيف لدى الدلافين؟", correctText: "امتلاك فتحات تنفسية في قمة الرأس بديلاً عن الأنف، تتيح تنفس الهواء الجوي مباشرة.", wrongOptions: ["امتلاك خياشيم متطورة مغطاة بصفائح مخاطية عازلة لتصفية الغازات الذائبة.", "الاعتماد على فجوات منقبضة رئوية ضخمة لطرد المياه الزائدة عبر آليات أسموزية عكسية.", "امتلاك أكياس هوائية متطورة للغاية متصلة بالجلد الخارجي لامتصاص الغازات."] },
+                { q: "كيف يؤثر ارتفاع مستويات غاز ثاني أكسيد الكربون المذاب في الماء سلباً على الفسيولوجيا الداخلية لأسماك المياه العذبة والمالحة كالبلطي والراي؟", correctText: "إحداث خلل فسيولوجي مباشر في اتزان وأيض الكالسيوم داخل الجسم، مما يثبط معدلات النمو الطبيعية.", wrongOptions: ["تحفيز الترسيب الكثيف لبروتين الكولاجين داخل الأنسجة الزعنفية.", "تسريع عمليات أكسدة الجلوكوز لإنتاج طاقة حيوية تزيد عن النطاق الطبيعي.", "تحويل البنية الهيكلية الداخلية بالكامل إلى مادة كيتينية مرنة لزيادة المقاومة."] },
+                { q: "من الشكل البياني لذوبانية غاز ثاني أكسيد الكربون مقابل درجة الحرارة: ماذا يحدث لكمية الغاز المذابة عند رفع درجة حرارة الكتلة المائية من 0°C إلى 60°C؟", correctText: "تنخفض قيم الذوبانية عكسياً من نحو 3.35 جم/كجم عند 0°C إلى حوالي 0.6 جم/كجم عند 60°C.", wrongOptions: ["ترتفع معدلات الذوبانية طردياً من 0.07 لتصل إلى 50.", "تظل قيم الذوبانية ثابتة تماماً عند الخط المرجعي المقدر بـ 1.5.", "تتلاشى تماماً وتنعدم الذوبانية لتصل إلى الصفر المطلق عند بلوغ درجة حرارة 10°C."] },
+                { q: "حدد نوع التكيف في كل من: تعديل ضغط الدم بشكل فعال في أسماك الأعماق، ومرونة الهياكل العظمية لسمكة الأفعى.", correctText: "تعديل ضغط الدم: تكيف فسيولوجي (وظيفي) | مرونة الهياكل العظمية: تكيف تركيبي (تشريحي).", wrongOptions: ["تعديل ضغط الدم: تكيف تركيبي (تشريحي) | مرونة الهياكل العظمية: تكيف سلوكي.", "تعديل ضغط الدم: تكيف سلوكي | مرونة الهياكل العظمية: تكيف فسيولوجي (وظيفي).", "كلاهما يمثل تكيفاً سلوكياً مؤقتاً."] },
+                { q: "علل: امتلاك أسماك الأعماق السحيقة مثل سمكة الجليد أعيناً كبيرة جداً وأجساماً مضغوطة.", correctText: "الأعين الكبيرة جداً تمكنها من التقاط أقل قدر من الضوء الخافت للرؤية في الظلام الدامس، والأجسام المضغوطة تساعدها على تحمل وتوزيع الضغط الهيدروستاتيكي الهائل في الأعماق.", wrongOptions: ["الأعين الكبيرة لتخزين غاز الأكسجين المذاب، والأجسام المضغوطة لزيادة سرعتها فوق السطح.", "الأعين الكبيرة لإصدار موجات راديو للتواصل، والأجسام المضغوطة لتقليل فقدان الماء بالأسموزية.", "لتتمكن من القيام بعملية البناء الضوئي الذاتي في قاع المحيط."] },
+                { q: "قارن بين الدعامة في المحار والدعامة في البلطي من حيث (موقع الدعامة) و(المكون الكيميائي الرئيسي).", correctText: "المحار: دعامة خارجية (صدفة) ومكونها كربونات الكالسيوم | البلطي: دعامة داخلية (هيكل عظمي) ومكونها فوسفات الكالسيوم والكولاجين.", wrongOptions: ["المحار: دعامة داخلية من الكيتين | البلطي: دعامة خارجية من كربونات الكالسيوم.", "المحار: دعامة خارجية من فوسفات الكالسيوم | البلطي: دعامة داخلية غضروفية مرنة فقط.", "كلاهما يمتلك دعامة خارجية مكونة من بروتين الكولاجين النقي."] },
+                { q: "لا يقتصر الدور الفسيولوجي للخياشيم في الأسماك البحرية العظمية على إتمام التبادل الغازي التنفسي؛ بل تمتد لوظائف أخرى. ما الدور الفسيولوجي الأسموزي الإضافي الذي تؤديه الخياشيم في هذه البيئة؟", correctText: "إخراج وتصريف أيونات الأملاح الزائدة المتراكمة في الجسم عبر خلايا إفرازية متخصصة.", wrongOptions: ["امتصاص جزيئات الماء العذب بنشاط عبر الغشاء الخلوي ضد منحدر التركيز.", "تخليق وبناء مركبات اليوريا النيتروجينية وضخها في مجرى الدم.", "تجميع الفائض من المياه العذبة الداخلية وتفريغه عبر مسام خاصة."] },
+                { q: "في تجربة معملية، تم تقليل تركيز غاز ثاني أكسيد الكربون المذاب في حوض يحتوي على طحالب وعوالق نباتية. ما النتيجة المباشرة المترتبة على ذلك على المستويات المستهلكة العليا في السلسلة الغذائية البحرية؟", correctText: "انخفاض معدل تكوين السكريات (كالجلوكوز) ونقص الطاقة الكيميائية المتاحة للمستهلكات.", wrongOptions: ["تحول بيكربونات الكالسيوم إلى كربونات كالسيوم فيزداد سمك أصداف الرخويات.", "زيادة معدل انقسام اليرقات والبيض نتيجة ارتفاع الرقم الهيدروجيني.", "تحفيز فوري لعمليات أكسدة الجلوكوز عبر مسارات الهدم التنفسي للأسماك."] },
+                { q: "من الشكل البياني لذوبانية الأكسجين مقابل درجة الحرارة: ماذا يحدث لذوبانية الأكسجين عند انخفاض درجة حرارة الكتلة المائية من 60°C إلى 0°C؟", correctText: "تزداد الذوبانية عكسياً مع الحرارة من حوالي 0.016 جم/كجم إلى نحو 0.072 جم لكل كيلوجرام ماء.", wrongOptions: ["تظل ثابتة عند 0.03.", "تنخفض من نحو 0.07 عند 0°C إلى 0.02 عند 60°C.", "تنخفض الذوبانية حتى تصل إلى الصفر تماماً عند 40°C."] },
+                { q: "وضح الأهمية السلوكية لإصدار الحيتان للأصوات في المحيطات.", correctText: "تُعد تكيفاً سلوكياً تستخدمه الحيتان للتواصل فيما بينها لمسافات طويلة، وتحديد المواقع والاتجاهات، والبحث عن الغذاء والفرائس، والتزاوج.", wrongOptions: ["تُستخدم لطرد الأملاح الزائدة من الخياشيم وتنظيم الضغط الأسموزي للدم.", "تعمل على رفع درجة حرارة المياه المحيطة لزيادة ذوبانية الأكسجين.", "تستخدمها الحيتان لتفتيت أصداف المحار والشعاب المرجانية."] },
+                { q: "فسر فسيولوجياً: قدرة أسماك الأعماق الكبيرة على البقاء حية دون التعرض لانفجار أو سحق أوعيتها الدموية (الشرايين والأوردة) تحت تأثير الضغط المائي المرتفع.", correctText: "بفضل امتلاكها جدران أوعية دموية (شرايين وأوردة) قوية ومرنة تتحمل الضغط المرتفع، بالإضافة إلى قدرتها الفسيولوجية على تعديل ضغط دمها ليتوازن مع الضغط الهيدروستاتيكي الخارجي.", wrongOptions: ["بسبب امتلاكها مثانة هوائية ضخمة مملوءة بغاز الهيدروجين تمنع وصول الضغط للأوعية.", "لأن دمها يتجمد جزئياً في الأعماق فيصبح صلباً غير قابل للانضغاط.", "لأنها تهاجر كل ساعة إلى السطح لتفريغ الضغط الزائد من شرايينها."] },
+                { q: "قارن بين بروتين الكولاجين ومادة الكيتين من حيث مكان الوجود في الكائنات البحرية.", correctText: "بروتين الكولاجين: يوجد في الهيكل الداخلي (العظام والغضاريف) للأسماك العظمية والغضروفية | مادة الكيتين: توجد في الهيكل الخارجي للقشريات مثل الجمبري.", wrongOptions: ["بروتين الكولاجين: يوجد في أصداف المحار | مادة الكيتين: توجد في عظام البلطي.", "بروتين الكولاجين: يغطي أجسام الشعاب المرجانية | مادة الكيتين: توجد في دم سمكة القرش.", "كلاهما يوجد في الهيكل الخارجي لشوكيات الجلد والرخويات."] }
+            ],
+
+            "الضوء والضغط (1ث)": [
+                { q: "كلما زاد عمق الماء، فإن شدة الضوء تحت سطح الماء:", correctText: "تقل تدريجياً", wrongOptions: ["تزداد تدريجياً", "تقل ثم تزداد", "تزداد ثم تقل"] },
+                { q: "أي من العبارات التالية يمثل الترتيب الصحيح للمناطق الضوئية في مياه المحيطات حسب عمقها من أعلى إلى أسفل؟", correctText: "المنطقة المضاءة - المنطقة الشفقية - المنطقة المظلمة", wrongOptions: ["المنطقة الشفقية - المنطقة المظلمة - المنطقة المضاءة", "المنطقة المظلمة - المنطقة المضاءة - المنطقة الشفقية", "المنطقة الشفقية - المنطقة المضاءة - المنطقة المظلمة"] },
+                { q: "تتميز السوائل بمقاومة الانضغاط وبالتالي تحتفظ بحجمها ثابتاً تقريباً، بينما تتميز المواد الغازية بـ:", correctText: "قابليتها للانضغاط بسهولة وشغل أي حيز توجد فيه", wrongOptions: ["عدم قابليتها للانسحاب أو الجريان كالموائع", "الحفاظ على شكل ثابت وحجم محدد تحت أي ضغط", "زيادة مقاومتها للضغط الخارجي كلما قل حجم الحيز"] },
+                { q: "أثناء نفاذ ألوان الطيف المختلفة في مياه المحيط، أي من الألوان الضوئية تُمتص طاقتها أولاً بالقرب من السطح (عند عمق 10 سم تقريباً)؟", correctText: "البرتقالي والأحمر", wrongOptions: ["البرتقالي والأزرق", "الأحمر والأزرق", "الأحمر والأصفر"] },
+                { q: "إذا علمت أن ضغط الماء يزداد بمعدل 1 atm لكل 10 أمتار أسفل السطح، فكم يبلغ الضغط الكلي المؤثر على كائن عند عمق 30 متراً؟ (علماً بأن الضغط الجوي عند السطح 1 atm)", correctText: "4 ضغط جوي (atm)", wrongOptions: ["3 ضغط جوي (atm)", "31 ضغط جوي (atm)", "11 ضغط جوي (atm)"] },
+                { q: "يكون ضغط الماء عند عمق معين في ماء البحر أكبر من ضغطه عند نفس العمق في ماء بحيرة عذبة، ويرجع ذلك مباشرة إلى:", correctText: "زيادة كثافة مياه البحر نتيجة نسبة الأملاح والعوالق بها", wrongOptions: ["زيادة مساحة السطح المعرضة للضغط في مياه البحار", "نقص وزن عمود السائل المؤثر في مياه البحار والمحيطات", "زيادة درجة حرارة مياه البحيرات العذبة مقارنة بالبحار"] },
+                { q: "طورت أسماك أعماق البحار السحيقة تكيفات فريدة في أغشية خلاياها لتتحمل الضغط الهائل وتمنع تلف الخلايا وسحقها، ويتحقق ذلك من خلال:", correctText: "زيادة مستويات الأحماض الدهنية غير المشبعة للحفاظ على سيولة الأغشية واستقرارها", wrongOptions: ["تغطية الأغشية الخلوية بطبقة سميكة كلسية صلبة تقاوم حركة تيارات الماء", "تقليل السوائل الداخلية والاعتماد الكلي على الغازات المضغوطة لتوليد ضغط معاكس", "تحويل الهيكل العظمي بالكامل إلى عظام صلبة غير مرنة تمنع نفاذية الخلية"] },
+                { q: "في المناطق القطبية، يؤدي انخفاض أو غياب الإشعاع الشمسي تماماً خلال فترات الشتاء إلى حدوث اضطراب في التوازن البيئي المائي نتيجة لـ:", correctText: "انخفاض معدلات التمثيل الضوئي بشكل كبير مما يؤثر على وفرة الغذاء للكائنات البحرية", wrongOptions: ["تحول الكائنات ذاتية التغذية إلى كائنات مفترسة تتغذى على سمك التونة", "زيادة نمو الطحالب والنباتات المائية بشكل مفرط يمنع حركة الأسماك", "توقف حركة تيار الخليج وتجمد كافة طبقات المحيط حتى القاع"] },
+                { q: "علل: توجد الطحالب والنباتات المائية والهائمات النباتية بكثرة في الطبقات السطحية من المياه.", correctText: "لوفرة الضوء والإشعاع الشمسي الكافي في الطبقات السطحية (المنطقة المضاءة) اللازم لإتمام عملية البناء الضوئي وإنتاج الغذاء والأكسجين.", wrongOptions: ["لأن الضغط المائي في الطبقات السطحية مرتفع جداً مما يساعدها على الانقسام.", "لأن الطبقات السطحية تخلو تماماً من غاز ثاني أكسيد الكربون المذاب.", "لأن درجة حرارة الطبقات السطحية تقترب دائماً من الصفر المئوي."] },
+                { q: "قارن بين الأسماك العظمية والأسماك الغضروفية من حيث مادة تركيب الهيكل والميزة الميكانيكية لكل منهما.", correctText: "الأسماك العظمية: هيكل عظمي (فوسفات الكالسيوم والكولاجين) يوفر صلابة وقوة أكبر | الأسماك الغضروفية: هيكل غضروفي (غضاريف) يوفر مرونة أعلى ووزناً أخف وسرعة حركة ومناورة.", wrongOptions: ["الأسماك العظمية: هيكل غضروفي أخف وزناً | الأسماك الغضروفية: هيكل كيتيني صلب غير مرن.", "الأسماك العظمية: هيكل من كربونات الكالسيوم | الأسماك الغضروفية: هيكل عظمي صلب جداً.", "كلاهما يمتلك نفس التركيب العظمي ونفس الميزة الميكانيكية تماماً."] },
+                { q: "جسم غواصة مغمور بالكامل في باطن سائل، مساحة سطحه المعرضة للضغط تساوي 4 m²، والضغط المائي المؤثر عند تلك النقطة يساوي 300,000 N/m². احسب مقدار القوة الضاغطة الكلية المؤثرة عمودياً على سطح الغواصة مع كتابة القانون المستخدم والوحدة.", correctText: "القانون: F = P × A | التعويض: F = 300,000 × 4 = 1,200,000 N (نيوتن).", wrongOptions: ["القانون: F = P / A | الناتج: 75,000 N (نيوتن).", "القانون: F = A / P | الناتج: 120,000 N (نيوتن).", "القانون: F = P + A | الناتج: 300,004 N (نيوتن)."] },
+                { q: "وضح من خلال دراستك كيف يؤثر تيار الخليج على التوازن البيئي والتنوع البيولوجي في مناطق أوروبا الغربية.", correctText: "يحمل تيار الخليج المياه الدافئة من المناطق الاستوائية نحو سواحل أوروبا الغربية فيدفئ مناخها ومياهها، مما يحافظ على اعتدال الحرارة ويوفر بيئة مناسبة لاستمرار الحياة البحرية وتنوعها البيولوجي.", wrongOptions: ["يجلب المياه المتجمدة من القطب الشمالي فيؤدي لتجمد سواحل أوروبا وموت الأسماك.", "يمنع وصول أشعة الشمس إلى المياه السطحية في أوروبا الغربية فيوقف البناء الضوئي.", "يرفع ملوحة المحيط الأطلسي إلى 90% فيقضي على كافة الكائنات البحرية."] },
+                { q: "تعتمد الكائنات الحية في الأعماق المتوسطة (من 200 إلى 1000 متر) على آليات بيولوجية فريدة للتوازن. وضح آلية عمل مثانة السباحة الهوائية الغازية مستشهداً بمثال من الكتاب.", correctText: "تمتلئ مثانة السباحة بالغاز وتتحكم السمكة في كميته (بالزيادة أو النقصان) لتغيير كثافتها الكلية وضبط طفوها والانتقال الرأسي بين الأعماق دون بذل طاقة عضلية كبيرة، مثل أسماك السلمون والبلطي.", wrongOptions: ["تملأ المثانة بالماء المالح لزيادة وزنها والغوص الدائم نحو القاع السحيق، مثل سمكة الراي.", "تضخ فيها اليوريا السائلة لرفع ضغطها الأسموزي، مثل أسماك القرش.", "تستخدم المثانة لتخزين الطعام المهضوم لفترات طويلة في الظلام، مثل المحار."] },
+                { q: "فسر فيزيائياً وعلمياً التباين في اختراق الطاقة الضوئية لسطح الماء عند سقوط أشعة الشمس بصورة عمودية مقارنة بسقوطها بصورة مائلة.", correctText: "عند السقوط العمودي تخترق معظم الطاقة الضوئية سطح الماء وتنفذ لأعماق أكبر وتقل الأشعة المنعكسة؛ أما عند السقوط المائل فتزداد نسبة الأشعة المنعكسة للغلاف الجوي وتقل كمية الطاقة الضوئية النافذة داخل الماء.", wrongOptions: ["عند السقوط المائل تخترق الأشعة الماء بعمق أكبر لأن زاوية الانكسار تكون صفراً.", "عند السقوط العمودي تنعكس 100% من أشعة الشمس ولا ينفذ أي ضوء للماء.", "لا تتأثر كمية الضوء المخترقة للماء بزاوية سقوط أشعة الشمس على الإطلاق."] },
+                { q: "استنتج كيف تكيفت أسماك الأعماق السحيقة (على عمق أكبر من 2000 متر) مثل سمكة الراي بيولوجياً للعيش تحت الضغط الشديد جداً رغم عدم امتلاكها لمثانات غازية، وما البدائل البيولوجية التي تمتلكها كائنات أخرى في تلك الأعماق؟", correctText: "تعتمد على هياكل مرنة (غضروفية) وأجسام مدمجة/مفلطحة وأنسجة وسوائل داخلية غير قابلة للانضغاط، وأغشية خلوية غنية بالأحماض الدهنية غير المشبعة؛ بينما تمتلك كائنات أخرى مثانات مملوءة بسوائل بدلاً من الغازات أو كبد غني بالزيوت.", wrongOptions: ["تملأ تجويفها البطني بغاز الهيدروجين عالي الضغط لمعادلة ضغط القاع.", "تحيط جسمها بصدفة سميكة جداً من كربونات الكالسيوم النقية.", "تصعد إلى السطح كل بضع دقائق لتعويض نقص الضغط الداخلي."] },
+                { q: "حلل البيانات العلمية التالية: يمتص الماء ألوان الطيف الدافئة أولاً عند أعماق ضحلة، بينما لا يصل سوى 1% فقط من الضوء المرئي -معظمه في النطاق الأزرق- إلى عمق 100 متر. فسر هذه الظاهرة مبيناً علاقتها بطبيعة الأطوال الموجية.", correctText: "لأن الماء يمتص الألوان الدافئة ذات الأطوال الموجية الطويلة (كالأحمر والبرتقالي) بسرعة في الطبقات السطحية الضحلة، بينما الألوان الباردة ذات الأطوال الموجية القصيرة (كالأزرق) تكون أقل امتصاصاً وأكثر تشتتاً ونفاذاً فتصل إلى أعماق أكبر حتى 100 متر.", wrongOptions: ["لأن الطول الموجي للون الأحمر قصير جداً فينكسر ويمتصه الماء في أول 100 متر.", "لأن اللون الأزرق يمتلك أقل تردد وأطول طول موجي في الطيف الكهرومغناطيسي.", "لأن أملاح البحر تعكس اللون الأحمر نحو القاع وتمتص اللون الأزرق عند السطح."] },
+                { q: "تنمو النباتات المائية والطحالب بشكل جيد في المياه الصافية حتى عمق 100 متر، بينما يقل هذا العمق كثيراً في المياه العالقة أو العكرة. ما التفسير العلمي الأنسب لهذه الظاهرة؟", correctText: "المواد العالقة والرواسب في المياه العكرة تمتص وتشتت الأشعة الشمسية، مما يمنع وصول الضوء اللازم للتمثيل الضوئي للأعماق.", wrongOptions: ["المياه العكرة تزيد من ملوحة وكثافة الطبقات السطحية، مما يؤدي إلى زيادة مباشرة في الضغط المائي وسحق خلايا الطحالب.", "الرواسب تمنع نفاذ الأشعة تحت الحمراء فقط دون الطيف المرئي، مما يؤثر على حرارة المياه ولا يؤثر على التمثيل الضوئي.", "انخفاض شدة الضوء في المياه العكرة يسرع من عملية الطفو الخلوي، مما يدفع الطحالب للانتقال إلى الأعماق السحيقة فتموت."] },
+                { q: "إذا غاص غواص في مياه بحيرة عذبة نقية للبحث عن عينات حيوية، حتى وصل إلى عمق معين أصبح عنده الضغط الناتج عن عمود الماء فقط يعادل 4 ضغط جوي (4 atm). احسب الضغط الكلي المؤثر على الغواص عند هذا العمق؟", correctText: "5 ضغط جوي (atm)", wrongOptions: ["3 ضغط جوي (atm)", "4 ضغط جوي (atm)", "14 ضغط جوي (atm)"] },
+                { q: "تمتلك أسماك الأعماق السحيقة التي تعيش على أعماق تتجاوز 2000 متر تحت سطح البحر تكيفات خلوية متطورة للغاية لضمان عدم تلف الخلايا أو انهيار أحشائها. أي مما يلي يمثل هذا التكيف الكيميائي الحيوي؟", correctText: "تحتوي أغشية خلاياها على مستويات مرتفعة من الأحماض الدهنية غير المشبعة لتمنح الأغشية سيولة واستقراراً تحت الضغط الهائل.", wrongOptions: ["تستبدل الأغشية الخلوية تماماً بهيكل غضروفي مرن وخفيف الوزن يمنع نفاذ الغازات والزيوت تماماً للداخل.", "زيادة مستويات الأحماض الدهنية المشبعة في تركيب الأغشية لزيادة صلابة وجفاف جدار الخلية لمنع السوائل من الحركة.", "الاعتماد على مثانات سباحة هوائية ضخمة مملوءة بغاز الهيدروجين عالي الضغط لمعادلة الضغط الهيدروستاتيكي الخارجي."] },
+                { q: "ناقش بالتفصيل كيف يعمل الإشعاع الشمسي كعامل حيوي وديناميكي في الحفاظ على التوازن البيئي داخل البيئات المائية، مبيناً أثره المركب على العمليات الحيوية للكائنات وتوزيعها الحراري، ومستشهداً بأسماك التونة وأسماك القد لتوضيح الاختلاف البيئي.", correctText: "يوفر الإشعاع الشمسي الطاقة اللازمة للبناء الضوئي للطحالب (قاعدة الغذاء والأكسجين)، ويدفئ الطبقات السطحية مسبباً تبايناً حرارياً يحدد توزيع الكائنات؛ فأسماك التونة تعيش في المياه الدافئة السطحية والمدارية، بينما تعيش أسماك القد في المياه الباردة.", wrongOptions: ["يمنع الإشعاع الشمسي عملية البناء الضوئي تماماً، وتعيش أسماك التونة في القطب الشمالي المتجمد بينما تعيش أسماك القد عند خط الاستواء.", "يؤثر الإشعاع الشمسي على الضغط الهيدروستاتيكي فقط ولا علاقة له بدرجة حرارة المياه أو توزيع الأسماك.", "تتغذى أسماك التونة وأسماك القد مباشرة على أشعة الشمس فوق البنفسجية."] },
+                { q: "غاصت سمكة سلمون أثناء هجرتها إلى عمق 200 متر في البحر. احسب الضغط الكلي المؤثر على جسمها بوحدة atm وبوحدة N/m² (علماً بأن الضغط الجوي 1 atm = 1.013 × 10⁵ N/m²).", correctText: "ضغط الماء = 200 ÷ 10 = 20 atm | الضغط الكلي = 1 + 20 = 21 atm | وبوحدة N/m² = 21 × 1.013 × 10⁵ = 2,127,300 N/m² (حوالي 2.13 × 10⁶ N/m²).", wrongOptions: ["الضغط الكلي = 20 atm | وبوحدة N/m² = 200,000 N/m².", "الضغط الكلي = 201 atm | وبوحدة N/m² = 20,100,000 N/m².", "الضغط الكلي = 19 atm | وبوحدة N/m² = 1,900,000 N/m²."] },
+                { q: "تمتلك بعض أسماك الأعماق السحيقة مثانة تحتوي على سوائل بدلاً من الغازات. وضح الأهمية الفيزيائية لهذا الاستبدال المادي تحت الضغط الشديد.", correctText: "لأن السوائل غير قابلة للانضغاط وتحتفظ بحجمها ثابتاً تقريباً تحت الضغوط الهائلة، بينما تنضغط الغازات بسهولة وتنهار المثانة الغازية وتنفجر أو تنسحق تحت الضغط الساحق للأعماق.", wrongOptions: ["لأن السوائل أخف وزناً من الغازات بمقدار 100 مرة فتدفع السمكة للطفو السريع فوق السطح.", "لأن السوائل تتبخر عند الضغط العالي وتتحول إلى غاز الأكسجين لتتنفسه السمكة.", "لأن الغازات تتجمد عند عمق 2000 متر وتتحول إلى بلورات صلبة تمزق أحشاء السمكة."] },
+                { q: "يسلك الضوء المرئي عند اختراقه لعمود الماء سلوكاً تدرجياً دقيقاً يؤدي إلى تشتت بعض الألوان وامتصاص الأخرى. أي العبارات التالية تصف هذا السلوك بدقة تامة طبقاً للأطوال الموجية؟", correctText: "يمتص الماء الألوان الدافئة ذات الأطوال الموجية الطويلة مثل الأحمر والبرتقالي في الطبقات الأولى، بينما يشتت الألوان الأكثر برودة ذات الأطوال الموجية القصيرة كاللون الأزرق الذي ينفذ أعمق.", wrongOptions: ["يمتص الماء اللون الأزرق والبنفسجي بالكامل في أول 10 سنتيمترات من السطح، بينما ينفذ اللون الأحمر ذو الطاقة العالية إلى عمق يتجاوز 200 متر.", "تتساوى قدرة جميع ألوان الطيف السبعة على الاختراق والنفاذ، ويمتصها الماء بالكامل دفعة واحدة عند الوصول لعمق ثابت يساوي 10 أمتار بالضبط.", "تتشتت الموجات الطويلة الدافئة بالكامل في المياه المفتوحة، مما يمنع النباتات السطحية من القيام بالبناء الضوئي نهائياً."] },
+                { q: "تتحرك سمكة عظمية في ماء مالح بكثافة عالية، فإذا علمت أن ضغط الماء يزداد بمعدل 1 ضغط جوي (1 atm) لكل 10 أمتار هبوطاً تحت السطح، فما هو العمق الحقيقي الذي تتواجد عنده السمكة عندما يكون الضغط الكلي الواقع عليها يعادل 11 مرة قدر الضغط الجوي؟", correctText: "100 متراً", wrongOptions: ["10 أمتار", "90 متراً", "110 متر"] },
+                { q: "يدرس باحث بيئي التوازن الحركي لأسماك السلمون أثناء هجرتها وتغيير أعماقها بين البحار والأنهار. ما هي الآلية البيولوجية التي وهبها الله لهذه الكائنات في بنيتها لتنظيم الطفو والاتزان الميكانيكي تحت ظروف الضغط المتغيرة؟", correctText: "امتلاك مثانات سباحة (كيس عوم) مملوءة بالغاز تساعدها على التحكم في طفوها والتوازن أو الانتقال بين الأعماق المختلفة.", wrongOptions: ["استخدام خلايا الكبد الزيتية الضخمة لامتصاص الغازات الجوية مباشرة من سطح الماء وضخها في خلايا الدم الخارجي.", "الاعتماد على زيادة مرونة غشائها الخلوي عن طريق تقليص نسب الأحماض الدهنية غير المشبعة لتقاوم التيارات العذبة.", "التخلص التام من الهيكل العظمي الداخلي واستبداله بسوائل هيدروليكية ذات كثافة منخفضة جداً تعادل مياه النهر."] },
+                { q: "اشرح بالتفصيل أثر التغيرات الموسمية في شدة الإشعاع الشمسي على التوازن البيئي المائي في المناطق القطبية خلال فصل الشتاء، مبيناً أثر ذلك على البناء الضوئي، ووفرة الغذاء.", correctText: "خلال فصل الشتاء في المناطق القطبية ينخفض أو يغيب الإشعاع الشمسي تماماً، فيتوقف أو ينخفض معدل البناء الضوئي للطحالب والهائمات النباتية بشدة، مما يؤدي لنقص حاد في الغذاء والأكسجين المتاح للمستهلكات ويحدث اضطراب في السلسلة الغذائية والتوازن البيئي.", wrongOptions: ["يزداد الإشعاع الشمسي في الشتاء القطبي فتزدهر الطحالب بشكل مفرط وتهاجر أسماك التونة إلى القطب الشمالي.", "لا تتأثر الطحالب بغياب الشمس في الشتاء لأنها تعتمد على ضوء القمر لإتمام البناء الضوئي.", "يرتفع معدل البناء الضوئي في الشتاء القطبي بسبب تجمد المياه السطحية وزيادة شفافيتها."] },
+                { q: "حدد بدقة وبإيجاز الفروق الكمية والفيزيائية في امتصاص ونفاذ طاقة الأشعة تحت الحمراء وطاقة الضوء المرئي عبر أعماق الماء المختلفة عند عمق 10 سم، عمق 10 أمتار، وعمق 100 م.", correctText: "عند 10 سم: يُمتص معظم طاقة الأشعة تحت الحمراء والألوان الدافئة (الأحمر) | عند 10 م: يُمتص أكثر من 50% من طاقة الضوء المرئي | عند 100 م: لا يصل سوى 1% فقط من الضوء المرئي (معظمه في النطاق الأزرق).", wrongOptions: ["عند 10 سم: يُمتص الضوء الأزرق بالكامل | عند 10 م: يصل 99% من الأشعة تحت الحمراء | عند 100 م: يصل 50% من الضوء الأحمر.", "تصل الأشعة تحت الحمراء بكامل طاقتها حتى عمق 100 متر بينما يُمتص الضوء المرئي في أول 10 سم.", "يتساوى امتصاص ونفاذ جميع الأشعة عند الأعماق الثلاثة بنسبة 33% لكل عمق."] },
+                { q: "فسر علمياً وفيزيائياً: لماذا يختلف ضغط الماء الواقع على جسم كائن بحري عند عمق 50 متراً في باطن مياه بحر مالح عن الضغط الواقع عليه عند نفس العمق 50 متراً في باطن مياه بحيرة عذبة ساكنة؟", correctText: "لأن ضغط السائل يعتمد طردياً على كثافته، وكثافة مياه البحر المالح أكبر من كثافة مياه البحيرة العذبة لاحتوائها على أملاح وعوالق مذابة، فيكون الضغط في البحر أكبر عند نفس العمق.", wrongOptions: ["لأن الضغط الجوي فوق البحار المالحة يساوي ضعف الضغط الجوي فوق البحيرات العذبة.", "لأن عجلة الجاذبية الأرضية فوق البحار المالحة تزيد بمقدار 10 أضعاف عن البحيرات.", "لأن ضغط الماء في البحيرة العذبة أكبر بسبب انخفاض درجة حرارتها وتجمد قاعها."] },
+                { q: "تتوزع الكائنات البحرية عمودياً وأفقياً بشكل غير متكافئ في البيئات المحيطية. ما المعيار المباشر لهذا التوزيع غير المتكافئ؟", correctText: "احتياجات الكائنات المتفاوتة من الضوء والطاقة والحرارة.", wrongOptions: ["التغيرات في سرعة موجات الراديو البحرية.", "مستوى العمق الجيولوجي للصخور القاعية فقط.", "حركة الملاحة والسفن البحرية."] },
+                { q: "تسقط أشعة الشمس على مياه المحيط بزوايا مختلفة نتيجة حركة الأرض وتغير الفصول. في أي الحالات التالية تكون كمية الطاقة الضوئية التي تخترق سطح الماء أكبر ما يمكن، ومتى تنعكس كمية أكبر للغلاف الجوي؟", correctText: "تكون كمية الضوء المخترقة كبيرة جداً عندما تسقط أشعة الشمس عمودية على السطح، بينما تقل الكمية المخترقة وتزداد المنعكسة عندما تسقط مائلة.", wrongOptions: ["تكون كمية الضوء المخترقة أكبر ما يمكن عندما تسقط الأشعة مائلة بزاوية حادة جداً، وتنعكس بالكامل عندما تسقط عمودية.", "لا تؤثر زاوية سقوط أشعة الشمس نهائياً على النفاذ، وتخترق نفس كمية الطاقة الضوئية السطح طوال ساعات النهار والليل.", "تخترق الأشعة المائلة مياه المحيط لتصل إلى المنطقة المظلمة السحيقة فوراً، بينما تحبس الأشعة العمودية في أول 10 سم."] },
+                { q: "يقاوم السائل (كالماء) الانضغاط بشكل شبه تام مما يجعله يحتفظ بحجمه ثابتاً، بينما تنضغط الغازات بسهولة. كيف تستغل خلايا كائنات الأعماق السحيقة هذه الخاصية الفيزيائية للسوائل للبقاء تحت الضغط العالي الساحق؟", correctText: "تمتلك هياكل جسدية مدمجة ومكونات بروتينية وسوائل داخلية تتحمل الضغط، وبعضها لا يمتلك مثانات غازية منعاً لانهيارها أو تحتوي مثاناتها على سوائل بدلاً من الغازات.", wrongOptions: ["تقوم خلاياها بامتصاص كميات هائلة من الغازات القابلة للانضغاط لتملأ بها كيس العوم حتى لا ينفجر الجدار الخارجي للسمكة.", "تستبدل السوائل الداخلية بخلايا هوائية جافة تماماً وقابلة للانضغاط لتقليل حجم السمكة بنسبة 90% عند الهبوط للقاع.", "تعتمد على الهيكل العظمي المصنوع من الكالسيوم النقي لامتصاص ضغط السوائل وتحويله إلى طاقة حرارية دافئة للخلية."] },
+                { q: "اشرح بالتفصيل العلاقة البيئية التكافلية والديناميكية بين الإشعاع الشمسي وازدهار نمو الشعاب المرجانية بالقرب من خط الاستواء، مبيناً دور هذا الإشعاع على مدار السنة في تحفيز الكائنات الدقيقة التي تعيش داخل أنسجتها، وموضحاً الخصائص الفيزيائية للمياه (الحرارة والعمق) اللازمة لهذا الازدهار المرجاني.", correctText: "يتوفر الإشعاع الشمسي بكثافة عالية طوال العام قرب خط الاستواء فيحفز الطحالب الدقيقة التكافلية داخل أنسجة المرجان للقيام بالبناء الضوئي وتوفير الغذاء والأكسجين للمرجان؛ ويتطلب ذلك مياهاً دافئة وصافية وضحلة (عمق قليل) ليصل الضوء الكافي إليها.", wrongOptions: ["تزدهر الشعاب المرجانية في الأعماق السحيقة المظلمة (> 2000 م) والمتجمدة بعيداً عن الإشعاع الشمسي تماماً.", "يقوم الإشعاع الشمسي بإذابة هيكل الشعاب المرجانية الكلسي وتحويله إلى بيكربونات كالسيوم.", "تعيش الشعاب المرجانية في المياه العكرة والعميقة جداً لأن الأشعة فوق البنفسجية تقتلها."] },
+                { q: "احسب بدقة قيمة القوة الضاغطة بالنيوتن المؤثرة على غواصة استكشافية صغيرة مساحة سطحها المعرض للضغط تساوي 2 متر مربع، إذا تواجدت عند نقطة في باطن البحر كان الضغط المائي عندها يساوي 400,000 N/m². واذكر القانون المستخدم.", correctText: "القانون: F = P × A | التعويض: F = 400,000 × 2 = 800,000 N (نيوتن).", wrongOptions: ["القانون: F = P / A | الناتج: 200,000 N (نيوتن).", "القانون: F = A / P | الناتج: 80,000 N (نيوتن).", "القانون: F = P + A | الناتج: 400,002 N (نيوتن)."] },
+                { q: "فسر علمياً وتشريحياً: لماذا تمتلك الأسماك الغضروفية كالقرش والراي ميزة حركية مرنة وأخف وزناً في الأعماق والبيئات المائية مقارنة بالأسماك العظمية كالبلطي، وما طبيعة النسيج المكون لهيكلها الداخلي؟", correctText: "لأن هيكلها الداخلي يتكون من نسيج غضروفي (غضاريف) وهو نسيج ضام مرن وأقل كثافة وأخف وزناً من العظام المتكلسة في الأسماك العظمية، مما يمنحها مرونة عالية وقدرة فائقة على الحركة السريعة والمناورة.", wrongOptions: ["لأن هيكلها الداخلي مكون من مادة الكيتين المجوفة والمملوءة بغاز الهيليوم الخفيف.", "لأنها لا تمتلك أي هيكل داخلي على الإطلاق وتعتمد على صدفة خارجية رقيقة.", "لأن عظامها تتكون من فوسفات الكالسيوم الممزوج بزيت الزيتون لتقليل الكثافة."] }
+            ],
+
+            "التوازن البيئي (1ث)": [
+                { q: "أي مما يلي يعبر عن التعريف الصحيح لـ «التوازن البيئي» في النظم المائية وفقاً لما درست؟", correctText: "حالة من الاستقرار الديناميكي تحدث عندما تتفاعل الكائنات الحية مع المكونات غير الحية بطريقة تحفظ استمرارية الحياة.", wrongOptions: ["حالة من الاستقرار الساكن تحدث عند غياب الكائنات المفترسة تماماً من النظام البيئي.", "الزيادة المفرطة في مستويات النيتروجين والفوسفور لزيادة إنتاجية الطحالب البحرية.", "عملية تدفق الطاقة من الأسماك المفترسة مباشرة إلى النباتات والطحالب النامية."] },
+                { q: "ما هي الكائنات التي تمثل الأساس الأول للشبكة الغذائية وتبدأ منها عملية تدفق الطاقة في النظام البيئي المائي؟", correctText: "الكائنات المنتجة مثل الطحالب والنباتات التي تقوم بعملية التمثيل الضوئي.", wrongOptions: ["الأسماك آكلات العشب التي تتغذى على الفضلات.", "العوالق الحيوانية التي تستهلكها الأسماك الصغيرة.", "الأسماك المفترسة الكبيرة التي تحافظ على توازن أعداد الفرائس."] },
+                { q: "يؤدي الاختلال في توازن مستويات عنصري النيتروجين والفوسفور وزيادتهما بشكل مفرط في البحيرات إلى حدوث:", correctText: "ازدهار غير طبيعي للطحالب يؤثر سلباً على التوازن البيئي.", wrongOptions: ["انخفاض حاد في أعداد الأسماك الصغيرة النامية مباشرة.", "زيادة كفاءة التمثيل الضوئي للشعاب المرجانية العميقة.", "تحول الكائنات المستهلكة إلى كائنات منتجة للطاقة."] },
+                { q: "إذا قامت إحدى الشركات بتصريف مياه ملوثة تحتوي على مبيدات حشرية ومعادن ثقيلة في مجرى مائي، فما التأثير المباشر المتوقع على هذا النظام وفقاً لما درست؟", correctText: "تأثير سلبي على جودة المياه وإلحاق الضرر المباشر بصحة الكائنات الحية.", wrongOptions: ["تحسن جودة المياه نتيجة تفاعل المعادن مع الأكسجين المذاب.", "زيادة معدلات هجرة أسماك السلمون لإنتاج البويضات في الأنهار.", "اختفاء قنافذ البحر تماماً وحماية الشعاب المرجانية من التدمير."] },
+                { q: "في بيئة بحرية، إذا تعرضت الأسماك المفترسة الكبيرة لصيد مفرط أدى إلى تناقص أعدادها بشدة، فما السيناريو المتوقع تتابع حدوثه؟", correctText: "ازدياد أعداد الأسماك الصغيرة بشكل مفرط مما يؤدي إلى استهلاك الموارد الغذائية بشكل غير متوازن وحدوث اضطراب.", wrongOptions: ["تناقص أعداد الأسماك الصغيرة لعدم وجود حماية لها.", "تحول الأسماك الصغيرة إلى التغذية الذاتية عبر التمثيل الضوئي.", "انتقال الطاقة بشكل عكسي من المستهلكات إلى المنتجات المائية."] },
+                { q: "قام أحد المصانع بتطبيق مفهوم التنمية المستدامة عبر إدخال تكنولوجيا نظيفة تعيد تدوير المياه وتمنع النفايات الصناعية. ما الهدف الرئيسي من هذا الإجراء كما نص الكتاب؟", correctText: "تلبية احتياجات الجيل الحالي دون المساس بقدرة الأجيال المستقبلية على تلبية احتياجاتها.", wrongOptions: ["زيادة أعداد الكائنات المهددة بالانقراض في نهر النيل بشكل سريع.", "تقليل استهلاك العوالق الحيوانية للطحالب البحرية.", "تغيير منسوب مياه الأنهار والتحكم التام في الفيضانات الموسمية."] },
+                { q: "ادرس المخطط التالي الذي يمثل تتابعاً غذائياً في نظام بيئي بحري: [أسماك مفترسة ← أسماك صغيرة ← عوالق حيوانية ← طحالب]. إذا استهلكت الأسماك المفترسة كميات كبيرة جداً من الأسماك الصغيرة، فما الأثر البيئي المتسلسل المترتب على ذلك؟", correctText: "زيادة أعداد العوالق الحيوانية مما يؤثر على نمو الطحالب وبالتالي يؤدي إلى عدم الحفاظ على التوازن.", wrongOptions: ["تناقص أعداد العوالق الحيوانية وازدهار الطحالب بشكل غير محدود.", "استقرار تام للنظام البيئي وزيادة التنوع البيولوجي للشعاب المرجانية.", "انخفاض حاد في مستويات النيتروجين والفوسفور في الطبقات السطحية."] },
+                { q: "في بيئة الشعاب المرجانية، تلعب الأسماك المفترسة دوراً حيوياً غير مباشر في حماية الهيكل الفيزيائي للشعاب. يتم ذلك عن طريق:", correctText: "السيطرة على أعداد الكائنات الصغيرة مثل قنافذ البحر التي يمكن أن تدمر الشعاب إذا زادت أعدادها بشكل غير طبيعي.", wrongOptions: ["إفراز مواد كيميائية معادلة لسموم المبيدات الحشرية.", "زيادة نفاذية الضوء اللازم لنمو النباتات البحرية.", "طرد العوالق الحيوانية لمنع التنافس على المأوى المرجاني."] },
+                { q: "اذكر الأدوار الأربعة الرئيسية التي يمكن للإنسان القيام بها للمساهمة في المحافظة على التوازن البيئي كما ورد في الكتاب.", correctText: "الحفاظ على الموارد الطبيعية، التوعية والتثقيف البيئي، التنمية المستدامة، والمشاركة في السياسات البيئية.", wrongOptions: ["الصيد الجائر، إلقاء المخلفات الصناعية، ردم المستنقعات، والإفراط في الأسمدة الكيميائية.", "زيادة انبعاثات الكربون، تجفيف البحيرات، قطع الغابات، واستنزاف المياه الجوفية.", "تربية قنافذ البحر بكثافة، التخلص من الأسماك المفترسة، بناء السدود العشوائية، واستخدام المبيدات."] },
+                { q: "ما المقصود بالتنمية المستدامة؟ وكيف يمكن للإنسان تطبيقها في القطاعات المختلفة لحماية البيئة؟", correctText: "هي تلبية احتياجات الجيل الحالي دون المساس بقدرة الأجيال المستقبلية على تلبية احتياجاتها؛ وتُطبق باستخدام تكنولوجيا نظيفة وإعادة تدوير المياه في الصناعة، وتقنيات الري الحديثة في الزراعة، وترشيد الاستهلاك في الحياة اليومية.", wrongOptions: ["هي استغلال كافة الموارد المائية والسمكية بأقصى سرعة لتحقيق أرباح اقتصادية عاجلة دون قيود.", "هي منع أي نشاط زراعي أو صناعي نهائياً حول الأنهار والبحار.", "هي زيادة استخدام الأسمدة النيتروجينية والفوسفورية لمضاعفة نمو الطحالب في البحيرات."] },
+                { q: "وضح بناءً على ما درست كيف يؤثر الصيد الجائر للأسماك المفترسة على الاستقرار البيئي للبحيرات والأنهار.", correctText: "يؤدي الصيد الجائر للأسماك المفترسة إلى زيادة مفرطة في أعداد الأسماك الصغيرة والكائنات المستهلكة للفرائس (مثل قنافذ البحر)، مما يستنزف الموارد الغذائية ويدمر المواطن الطبيعية (كالشعاب المرجانية) ويحدث خللاً في التوازن البيئي.", wrongOptions: ["يؤدي إلى اختفاء الأسماك الصغيرة تماماً وتحول الطحالب إلى كائنات مفترسة.", "يزيد من نقاء المياه ورفع نسبة الأكسجين المذاب بشكل مستمر.", "يؤدي إلى استقرار ديناميكي مثالي وزيادة التنوع البيولوجي في البحيرة."] },
+                { q: "يتعرض نهر النيل لتحديات بيئية كبيرة تهدد استدامته. اذكر ثلاثة تحديات رئيسية تواجه النيل وفقاً لما جاء في أنشطة البحث والاستقصاء بالكتاب.", correctText: "التلوث (الصناعي والزراعي والصحي)، تغير المناخ (وتذبذب منسوب التدفق والجفاف والفيضانات)، والاستغلال المفرط للموارد المائية والزيادة السكانية.", wrongOptions: ["زيادة أعداد الحيتان والدلافين، انخفاض ملوحته الشديد، وتجمد مياهه طوال العام.", "كثرة الشعاب المرجانية، ارتفاع المد والجزر المحيطي، وزيادة الأسماك الغضروفية.", "لا يواجه نهر النيل أي تحديات بيئية في الوقت الحالي."] },
+                { q: "اقترح ثلاثة من ممارسات يومية صغيرة صديقة للبيئة التي يمكن لأي طالب تطبيقها في حياته اليومية.", correctText: "ترشيد استهلاك المياه والكهرباء، تقليل استخدام البلاستيك وإعادة التدوير، وعدم إلقاء المخلفات في المجاري المائية ونشر الوعي البيئي.", wrongOptions: ["ترك صنابير المياه مفتوحة، إلقاء الأكياس البلاستيكية في الترع، وحرق المخلفات في الهواء.", "الإسراف في استخدام المنظفات الكيميائية، صيد الأسماك الصغيرة، وإهدار الطعام.", "استخدام المبيدات الحشرية بكثافة، استهلاك الورق دون إعادة تدوير، وتلويث الشواطئ."] },
+                { q: "حلل الآلية البيئية التي يسبب بها الإثراء الغذائي المفرط بالنيتروجين والفوسفور تدهور النظم المائية، وماذا يطلق الكتاب على هذه الظاهرة؟", correctText: "تؤدي زيادة النيتروجين والفوسفور إلى ازدهار غير طبيعي للطحالب (ظاهرة الإثراء الغذائي أو التتريف)، فتحجب ضوء الشمس عن النباتات المغمورة، وعند موتها تتحلل بواسطة البكتيريا التي تستهلك الأكسجين المذاب فتموت الأسماك والكائنات المائية.", wrongOptions: ["تؤدي لزيادة شفافية المياه ووصول الضوء إلى عمق 1000 متر فتنمو الشعاب المرجانية بكثافة.", "تتفاعل هذه العناصر مع الأكسجين لتكوين طبقة جليدية تعزل سطح البحيرة.", "يطلق عليها الكتاب ظاهرة التوازن الديناميكي المستقر."] },
+                { q: "يرتبط الحفاظ على هيكل الشعاب المرجانية بوجود شبكة غذائية متوازنة. ناقش الدور الذي تلعبه الأسماك المفترسة في حماية الشعاب المرجانية من التدمير المادي وما الكائن المستهدف؟", correctText: "تتغذى الأسماك المفترسة على الكائنات الصغيرة التي تتغذى على المرجان وتضبط أعدادها، والكائن المستهدف هو (قنافذ البحر) التي إذا زادت أعدادها بشكل غير طبيعي فإنها تدمر الهيكل المادي للشعاب المرجانية.", wrongOptions: ["تفرز الأسماك المفترسة مادة كربونات الكالسيوم لبناء الشعاب، والكائن المستهدف هو (أسماك السلمون).", "تطرد الأسماك المفترسة العوالق النباتية بعيداً، والكائن المستهدف هو (الدلافين).", "تتغذى الأسماك المفترسة على الشعاب المرجانية الضعيفة لتجديدها، والكائن المستهدف هو (المحار)."] },
+                { q: "بناءً على التساؤلات البحثية: كيف يمكن للإنسان استخدام التكنولوجيا الحديثة للتكيف مع تأثيرات تغير المناخ وحماية نهر النيل؟ أعط مثالين محددين مما درست.", correctText: "استخدام تقنيات الري الحديثة والذكية لتقليل استهلاك المياه في الزراعة، واستخدام أنظمة المراقبة والاستشعار عن بُعد والإنذار المبكر للتنبؤ بالفيضانات والجفاف وإدارة السدود ومعالجة مياه الصرف وإعادة تدويرها.", wrongOptions: ["تحويل مجرى نهر النيل بالكامل إلى الصحراء الغربية، وإيقاف الزراعة في مصر نهائياً.", "ضخ مياه البحر الأحمر المالحة في نهر النيل لزيادة منسوبه، واستخدام الري بالغمر التقليدي.", "إزالة السد العالي والقناطر، وتصريف مخلفات المصانع مباشرة في النيل لتدفئته."] },
+                { q: "تنظم أعداد الكائنات الحية في كل مستوى من مستويات السلسلة الغذائية بالاعتماد على ميكانيكية محددة. ما هي هذه الميكانيكية المباشرة وفقاً لما درست؟", correctText: "التدفق الطبيعي للطاقة بدءاً من الكائنات المنتجة إلى المستهلكة.", wrongOptions: ["ثبات أعداد العوالق الحيوانية بشكل استاتيكي مطلق طوال العام.", "زيادة مستويات المعادن الثقيلة في مياه الأنهار والبحيرات.", "الاعتماد الكلي للمستهلكات العليا على المكونات غير الحية فقط."] },
+                { q: "يتفاعل كل نوع من الكائنات الحية مع غيره بطرق متعددة. إذا تراجعت أعداد الأسماك المفترسة في بيئة بحرية نتيجة الصيد المفرط، فما النتيجة البيولوجية المترتبة على ذلك مباشرة؟", correctText: "يزداد عدد الأسماك الصغيرة بشكل مفرط مما يؤدي إلى استهلاك الموارد الغذائية بشكل غير متوازن واضطراب النظام.", wrongOptions: ["تتحول الأسماك الصغيرة تلقائياً إلى كائنات منتجة تقوم بالتمثيل الضوئي.", "ينخفض معدل نمو الطحالب نتيجة الزيادة المفاجئة في المغذيات الكيميائية.", "يحدث استقرار ديناميكي فوري يحفظ التنوع البيولوجي دون حاجة للطاقة."] },
+                { q: "تساعد الأسماك المفترسة في الحفاظ على توازن الشعاب المرجانية عن طريق السيطرة على أعداد كائنات صغيرة معينة. ما هي هذه الكائنات التي قد تدمر الشعاب إذا زادت أعدادها بشكل غير طبيعي؟", correctText: "قنافذ البحر.", wrongOptions: ["العوالق الحيوانية.", "الطحالب الخضراء.", "الأسماك آكلات العشب."] },
+                { q: "وضح ثلاثاً من الممارسات والسياسات التي يجب تفعيلها لحماية جودة المياه ومواجهة الصيد الجائر وتغير المناخ.", correctText: "سن قوانين تجرم إلقاء المخلفات الصناعية والزراعية وتلزم بمعالجة المياه، وتنظيم مواسم الصيد ومنع الصيد الجائر لحماية الأنواع المهددة، وتبني تقنيات الطاقة النظيفة والري الحديث للتكيف مع تغير المناخ.", wrongOptions: ["تشجيع الصيد الجائر في مواسم التكاثر، السماح بتصريف المبيدات في الأنهار، وزيادة الانبعاثات الكربونية.", "ردم المستنقعات الساحلية، استنزاف المياه الجوفية، وإلغاء المحميات الطبيعية.", "الاعتماد على المبيدات الحشرية، صيد الأسماك المفترسة الكبيرة، وإهدار المياه العذبة."] },
+                { q: "حدد بدقة الأدوار الأربعة الرئيسية المحددة التي يمكن للإنسان القيام بها في حياته اليومية أو المهنية للمحافظة على التوازن البيئي.", correctText: "الحفاظ على الموارد الطبيعية، التوعية والتثقيف البيئي، التنمية المستدامة، والمشاركة في السياسات البيئية.", wrongOptions: ["الاستهلاك المفرط، التلوث الصناعي، تدمير المواطن الطبيعية، والصيد الجائر.", "زيادة النيتروجين في البحيرات، تجفيف الأنهار، قطع الأشجار، وحرق البلاستيك.", "إزالة الطحالب، صيد الحيتان، تكسير الشعاب المرجانية، وتلويث المياه الجوفية."] },
+                { q: "فسر علمياً كيف يؤدي استهلاك الأسماك المفترسة لكميات كبيرة جداً من الأسماك الصغيرة إلى حدوث اضطراب تتابعي في نمو الطحالب وعدم الحفاظ على التوازن بالنظام المائي.", correctText: "عندما تستهلك الأسماك المفترسة كميات كبيرة من الأسماك الصغيرة تقل أعداد الأسماك الصغيرة، فتزداد أعداد العوالق الحيوانية (التي تتغذى عليها الأسماك الصغيرة)، فتستهلك العوالق الحيوانية كميات كبيرة من الطحالب مما يؤثر سلباً على نمو الطحالب ويختل التوازن البيئي.", wrongOptions: ["تتغذى الأسماك المفترسة مباشرة على الطحالب فتقضي عليها تماماً.", "زيادة الأسماك المفترسة تزيد من نسبة الفوسفور في الماء فتزدهر الطحالب بلا حدود.", "تتحول العوالق الحيوانية إلى أسماك مفترسة وتوقف عملية البناء الضوئي."] },
+                { q: "تبدأ الطاقة بالتدفق في النظام البيئي المائي من كائنات محددة تقوم بعملية التمثيل الضوئي. ما هو الاسم العلمي لهذه المجموعات من الكائنات؟", correctText: "الكائنات المنتجة (مثل الطحالب والنباتات).", wrongOptions: ["الكائنات المستهلكة آكلات العشب.", "العوالق الحيوانية.", "الأسماك المفترسة العليا."] },
+                { q: "تصب بعض المنشآت مواد كيميائية مثل المبيدات الحشرية والمعادن الثقيلة في المياه. ما هو الأثر المباشر لهذه المواد الكيميائية على النظم المائية؟", correctText: "التأثير السلبي على جودة المياه وإلحاق الضرر بصحة الكائنات الحية.", wrongOptions: ["تحسين مستويات توازن العناصر الغذائية كالفوسفور.", "زيادة معدل تدفق الطاقة عبر الشبكة الغذائية بشكل طبيعي.", "تنشيط نمو الشعاب المرجانية لتوفير موطن جديد للأسماك."] },
+                { q: "في بيئة بحرية متوازنة، إذا زادت أعداد قنافذ البحر بشكل غير طبيعي نتيجة غياب ضابطها البيولوجي، فما الضرر الفيزيائي المباشر المتوقع حدوثه؟", correctText: "تدمير بنية الشعاب المرجانية مسبباً فقدان التنوع.", wrongOptions: ["زيادة نفاذية الضوء والتمثيل الضوئي للطبقات العميقة.", "انخفاض مستويات التلوث الصناعي كلياً واستقرار الموارد.", "تحول قنافذ البحر إلى كائنات منتجة أولية تدعم الطاقة."] },
+                { q: "اشرح بالتفصيل كيف تساهم التنمية المستدامة والتحول إلى ممارسات صديقة للبيئة في حماية النظم البيئية المائية، موضحاً تطبيقات ترتبط بالزراعة والصناعة والحياة اليومية.", correctText: "تضمن استدامة الموارد للأجيال القادمة؛ في الزراعة: استخدام الري الحديث وتقليل الأسمدة والمبيدات الكيميائية | في الصناعة: استخدام تكنولوجيا نظيفة وإعادة تدوير المياه ومنع النفايات | في الحياة اليومية: ترشيد المياه وتقليل البلاستيك.", wrongOptions: ["تعتمد التنمية المستدامة على زيادة الصرف الصناعي في البحار والري بالغمر في الزراعة.", "تقتصر التنمية المستدامة على بناء السدود فقط دون أي دور للفرد أو الزراعة أو الصناعة.", "تهدف التنمية المستدامة إلى زيادة استخدام المعادن الثقيلة والمبيدات الحشرية في المزارع السمكية."] },
+                { q: "وضح بدقة التحديات الثلاثة الرئيسية المحددة التي تواجه نهر النيل وتهدد استدامته للأجيال القادمة والتي أشار إليها الكتاب المدرسي.", correctText: "التلوث (من الصرف الصناعي والزراعي والصحي)، تغير المناخ (وتأثيره على منسوب المياه والجفاف والفيضانات)، والاستغلال المفرط للموارد المائية والزيادة السكانية.", wrongOptions: ["زيادة ملوحة النيل فوق 50%، انتشار الشعاب المرجانية، وتجمد مياه النيل شتاءً.", "كثرة الأسماك المفترسة، انعدام التبخر، وزيادة الفيضانات المدمرة يومياً.", "نقص غاز النيتروجين الجوي، اختفاء الطحالب تماماً، وارتفاع الضغط الجوي."] },
+                { q: "فسر علمياً كيف تؤدي الزيادة المفرطة في مستويات العناصر الغذائية كالنيتروجين والفوسفور في الأنظمة المائية إلى حدوث اضطراب شديد في التوازن البيئي واستمرارية الحياة المائية.", correctText: "تسبب ازدهاراً مفرطاً وغير طبيعي للطحالب (الإثراء الغذائي) فتغطي السطح وتحجب الضوء، وعند موتها تتحلل بواسطة البكتيريا التي تستهلك الأكسجين المذاب مما يؤدي لاختناق وموت الأسماك والكائنات الحية وتدهور النظام البيئي.", wrongOptions: ["تتحد مع الماء لتكوين أحماض قوية تذيب صخور القاع وتجفف البحيرة تماماً.", "تزيد من سرعة سباحة الأسماك المفترسة فتقضي على جميع الفرائس في يوم واحد.", "تحول المياه العذبة إلى مياه شديدة الملوحة فتنفجر خلايا الكائنات البحرية."] },
+                { q: "يُعرف التوازن البيئي في النظم المائية بأنه حالة من الاستقرار تحدث عند تفاعل الكائنات الحية مع المكونات غير الحية. ما نوع هذا الاستقرار كما درست؟", correctText: "استقرار ديناميكي يضمن استمرارية الحياة.", wrongOptions: ["استقرار مؤقت يزول بزوال الأنشطة البشرية.", "استقرار ساكن (استاتيكي) يمنع أي تغير عددي.", "استقرار كيميائي يقتصر على الصخور القاعية فقط."] },
+                { q: "يؤدي الصيد الجائر وتدمير المواطن الطبيعية كالمستنقعات والشعاب المرجانية إلى عواقب بيئية وخيمة. ما هي النتيجة المباشرة المذكورة في الكتاب المدرسي؟", correctText: "فقدان التنوع البيولوجي واختلال التوازن البيئي.", wrongOptions: ["زيادة مستويات التوعية والتثقيف البيئي.", "تحسن تدفق الطاقة عبر الشبكات الغذائية.", "ثبات منسوب مياه نهر النيل وحمايته من الجفاف."] },
+                { q: "ما التقنية الحديثة المقترحة علمياً لتقليل استهلاك المياه في القطاع الزراعي وضمان استدامة الموارد؟", correctText: "التقنيات الزراعية الحديثة لتقليل الاستهلاك (مثل الري بالتنقيط والرش).", wrongOptions: ["الاعتماد الكامل على الصرف الصناعي غير المعالج.", "زيادة استخدام المبيدات الحشرية والمعادن الثقيلة.", "إقامة السدود ومشاريع تحويل مياه الأنهار كلياً."] },
+                { q: "اقترح استراتيجية تكنولوجية وإدارية لحماية نهر النيل والتكيف مع تأثيرات تغير المناخ (مثل الجفاف والفيضانات وتذبذب منسوب التدفق) موضحاً آليات الإنذار والتحكم.", correctText: "استخدام الأقمار الصناعية والاستشعار عن بُعد ونظم الإنذار المبكر للتنبؤ بالأمطار والفيضانات والجفاف، والتحكم الذكي في بوابات السدود والخزانات، وتطبيق تقنيات الري الحديث وإعادة تدوير المياه المعالجة.", wrongOptions: ["إغلاق السد العالي تماماً ومنع مرور المياه، والاعتماد على مياه الأمطار فقط في الزراعة.", "حفر قنوات لتصريف مياه النيل في البحر الأحمر لتجنب الفيضانات.", "وقف جميع محطات تنقية المياه وتقليل الرقابة على المصانع."] },
+                { q: "حدد بدقة ثلاثة إجراءات أو أسئلة بحثية حددها الكتاب المدرسي لتقييم السياسات والوعي المجتمعي في حماية النظام البيئي لنهر النيل من التلوث الصناعي.", correctText: "مدى كفاية وفعالية القوانين والتشريعات الحالية لمنع التلوث الصناعي، دور المؤسسات الصناعية في معالجة مخلفاتها قبل الصرف، ومستوى الوعي البيئي لدى المجتمع والمواطنين بأهمية الحفاظ على نهر النيل.", wrongOptions: ["كمية الأسماك الغضروفية في النيل، سرعة الرياح في طبقة الستراتوسفير، ونسبة غاز الأرجون في الهواء.", "عمق المنطقة المظلمة في النيل، تركيز اليوريا في دم البلطي، ومعدل انصهار الجليد القطبي.", "عدد السفن السياحية فقط، لون طلاء الكباري، ونوع الصخور في الصحراء الشرقية."] },
+                { q: "فسر علمياً الأهمية البيئية لوجود أسماك مفترسة في النظام البيئي المائي، وعلاقة ذلك المباشرة بتنظيم أعداد الفرائس واستقرار المواطن الطبيعية.", correctText: "تعمل الأسماك المفترسة كضابط بيولوجي ينظم أعداد الفرائس (مثل الأسماك الصغيرة وقنافذ البحر) ويمنع زيادتها المفرطة، مما يحمي الموارد الغذائية والمواطن الطبيعية (كالشعاب المرجانية) من التدمير ويحفظ التوازن البيئي والتنوع البيولوجي.", wrongOptions: ["تقوم الأسماك المفترسة بعملية البناء الضوئي لتزويد الفرائس بالأكسجين والغذاء.", "تزيد الأسماك المفترسة من تلوث المياه بالمغذيات فتقضي على المواطن الطبيعية.", "تمنع الأسماك المفترسة حركة الأمواج والتيارات البحرية داخل النظام البيئي."] }
+            ],
+
+            "الغلاف الجوي (1ث)": [
+                { q: "تسمى المنطقة الانتقالية الفاصلة التي تنتهي عندها طبقة الستراتوسفير عند ارتفاع 50 كم بـ ..............", correctText: "الستراتوبوز", wrongOptions: ["الميزوبوز", "الأيونوسفير", "التروبوبوز"] },
+                { q: "يمثل غاز ثاني أكسيد الكربون نسبة 0.04% تقريباً من حجم الغلاف الجوي. ما النتيجة الفسيولوجية والفيزيائية المباشرة لزيادة هذه النسبة بشكل ملحوظ؟", correctText: "حبس الحرارة وتأخير تسربها إلى الفضاء، مما يعزز ظاهرة الاحتباس الحراري.", wrongOptions: ["زيادة نفاذ الأشعة فوق البنفسجية وانخفاض حرارة كوكب الأرض.", "تأين ذرات النيتروجين في طبقة التروبوسفير وتكوين الشفق القطبي.", "زيادة معدل سرعة الإفلات لجميع غازات الغلاف الجوي."] },
+                { q: "ما الخطر البيولوجي المباشر الناجم عن وصول الأشعة فوق البنفسجية الضارة إلى سطح الأرض في حال تلف الأوزون؟", correctText: "إحداث أضرار جسيمة للحمض النووي (DNA) في خلايا الكائنات الحية.", wrongOptions: ["تصلب الأغشية الخلوية بسبب الأحماض الدهنية غير المشبعة.", "انخفاض سرعة الإفلات لكوكب الأرض.", "توقف حركة موجات الراديو والاتصالات اللاسلكية."] },
+                { q: "متى يتمكن كوكب معين من الاحتفاظ بغاز محدد على سطحه وضمن غلافه الجوي؟", correctText: "عندما تكون السرعة الفاعلة لجزيئات الغاز أقل من سرعة الإفلات من جاذبية الكوكب.", wrongOptions: ["عندما تكون سرعة الإفلات صفراً.", "عندما تكون السرعة الفاعلة لجزيئات الغاز أكبر من أو تساوي سرعة الإفلات.", "عندما تنعدم درجة الحرارة كلياً."] },
+                { q: "النطاق الرأسي لسمك طبقة الإكسوسفير يساوي ..............", correctText: "500 كم", wrongOptions: ["300 كم", "700 كم", "1000 كم"] },
+                { q: "تجمع طبقة الأيونوسفير بين وظيفة حيوية وقائية ووظيفة تكنولوجية هما:", correctText: "الوقائية: امتصاص أشعة جاما والأشعة السينية عالية الخطورة | التكنولوجية: عكس موجات الراديو للاتصالات اللاسلكية.", wrongOptions: ["الوقائية: حرق الشهب | التكنولوجية: توفير مياه الأمطار.", "الوقائية: منع انخفاض الحرارة | التكنولوجية: تشغيل محركات الطائرات.", "الوقائية: خفض سرعة الإفلات | التكنولوجية: إنتاج الأكسجين."] },
+                { q: "تنطلق فوتونات ضوئية بأطياف متباينة الألوان في ظاهرة الشفق القطبي. فسر هذا التنوع في الألوان.", correctText: "بسبب اختلاف نوع الذرات والأيونات المثارة وتفاوت مستويات طاقة إثارتها عند العودة للحالة الأرضية.", wrongOptions: ["نتيجة مرور الضوء عبر منشورات زجاجية فضائية.", "بسبب اختلاف زاوية سقوط الأشعة تحت الحمراء.", "بسبب انعكاس أضواء المدن القطبية."] },
+                { q: "ارتفاع درجة الحرارة كلما ارتفعنا خلال طبقة الستراتوسفير بسبب:", correctText: "امتصاص غاز الأوزون للأشعة فوق البنفسجية القادمة من الإشعاع الشمسي.", wrongOptions: ["احتراق الشهب والنيازك القادمة من الفضاء.", "انعكاس موجات الراديو في هذه الطبقة.", "وجود ظاهرة الشفق القطبي بها."] },
+                { q: "علل: تُستخدم طبقة الأيونوسفير في الاتصالات اللاسلكية لمسافات كبيرة عبر سطح الأرض.", correctText: "لاحتوائها على أيونات مشحونة كهربائياً وإلكترونات حرة تعمل على عكس موجات الراديو المرسلة من محطات البث الأرضية نحو الأرض مرة أخرى لتصل لمسافات بعيدة.", wrongOptions: ["لأنها تحتوي على طبقة الأوزون التي تمتص موجات الراديو وتضخمها.", "لأن الهواء فيها يتحرك أفقياً بسرعة الضوء فينقل الصوت مباشرة.", "لأن درجة حرارتها منخفضة جداً (-93°C) فتتجمد عليها موجات الراديو."] },
+                { q: "قارن بين طبقة الستراتوسفير وطبقة الميزوسفير من حيث سلوك درجة الحرارة مع ذكر السبب.", correctText: "الستراتوسفير: تثبت حرارتها في الجزء السفلي ثم ترتفع بالارتفاع بسبب امتصاص طبقة الأوزون للأشعة فوق البنفسجية | الميزوسفير: تنخفض درجة حرارتها بشدة بالارتفاع (تصل لـ -93°C) لندرة الغازات التي تمتص الإشعاع الشمسي.", wrongOptions: ["الستراتوسفير: تنخفض حرارتها بالارتفاع لاحتراق الشهب | الميزوسفير: ترتفع حرارتها لوجود الأوزون.", "كلاهما ترتفع درجة حرارته بالارتفاع ليصل إلى 2000°C.", "كلاهما يتميز بثبات تام في درجة الحرارة من البداية للنهاية."] },
+                { q: "حدد العوامل التي تعتمد عليها السرعة الفاعلة لجزيئات الغاز مع توضيح العلاقة بينهم.", correctText: "تعتمد على: درجة الحرارة المطلقة للغاز (علاقة طردية؛ تزداد بارتفاع الحرارة) والكتلة الجزيئية للغاز (علاقة عكسية؛ تزداد كلما قلت كتلة الجزيء).", wrongOptions: ["تعتمد على: لون الغاز (علاقة طردية) وحجم الإناء (علاقة عكسية).", "تعتمد على سرعة دوران الأرض حول محورها فقط ولا تتأثر بالحرارة.", "تتناسب طردياً مع الكتلة الجزيئية وعكسياً مع درجة الحرارة المطلقة."] },
+                { q: "علل: تُعد طبقة الستراتوسفير طبقة مفضلة لتحليق الطائرات بأسلوب آمن ومستقر.", correctText: "لأن حركة الهواء فيها أفقية وليست رأسية، وتخلو من السحب والغيوم والاضطرابات الجوية والعواصف، مما يوفر رؤية واضحة وطيراناً مستقراً.", wrongOptions: ["لأنها الطبقة الأقرب لسطح الأرض وتحتوي على 99% من بخار الماء.", "لأن درجة حرارتها تصل إلى 2000°C فتساعد في تشغيل محركات الطائرات.", "لانعدام الجاذبية الأرضية فيها تماماً فتطفو الطائرات دون وقود."] },
+                { q: "علل علمياً: ارتفاع درجات الحرارة في طبقة الثرموسفير لتتجاوز 2000°C.", correctText: "بسبب امتصاص ذرات الغازات (كالأكسجين والنيتروجين) للأشعة الشمسية عالية الطاقة (مثل الأشعة السينية وأشعة جاما والأشعة فوق البنفسجية قصيرة الموجة).", wrongOptions: ["بسبب احتراق الشهب والنيازك القادمة من الفضاء الخارجي بداخلها.", "بسبب قربها الشديد من حمم البراكين الموجودة على سطح الأرض.", "لأنها تحتوي على أعلى نسبة من بخار الماء وغاز ثاني أكسيد الكربون."] },
+                { q: "ما النتائج البيئية المترتبة على كوكب الأرض إذا اختفت طبقة الميزوسفير من ترتيب الغلاف الجوي؟", correctText: "ستصل الشهب والنيازك والصخور الفضائية الساقطة نحو الأرض دون أن تحترق، مما يؤدي إلى اصطدامها بسطح الأرض وإحداث دمار هائل وتهديد الحياة والكائنات الحية.", wrongOptions: ["تتعطل جميع أجهزة الراديو والاتصالات اللاسلكية لعدم انعكاس الموجات.", "تنفذ الأشعة فوق البنفسجية الضارة بالكامل لغياب طبقة الأوزون.", "تتوقف الأمطار والرياح على سطح الأرض لعدم وجود بخار الماء."] },
+                { q: "علل: تُعد طبقة الإكسوسفير المنطقة المثالية لوضع الأقمار الصناعية والمركبات الفضائية.", correctText: "لندرة جزيئات الغازات فيها وانخفاض كثافتها بشدة، مما يقلل أو يعدم قوى الاحتكاك الهوائي على الأقمار الصناعية ويحافظ على سرعتها ومداراتها دون احتراق.", wrongOptions: ["لكثافتها العالية جداً التي تحمل الأقمار الصناعية وتمنعها من السقوط.", "لوجود تيارات حمل هوائية صاعدة تدفع الأقمار الصناعية باستمرار.", "لأن درجة حرارتها ثابتة عند الصفر المئوي وتحتوي على سحب كثيفة."] },
+                { q: "ماذا يحدث للأقمار الصناعية إذا تم وضعها في مدارات داخل طبقة التروبوسفير أو الستراتوسفير بدلاً من الإكسوسفير؟", correctText: "ستتعرض لقوى احتكاك هائلة مع جزيئات الهواء الكثيفة في هاتين الطبقتين، مما يؤدي إلى ارتفاع درجة حرارتها بشدة واحتراقها وتدميرها أو سقوطها على سطح الأرض.", wrongOptions: ["ستزداد سرعتها لتتجاوز سرعة الضوء وتفلت خارج المجموعة الشمسية.", "ستتجمد دوائرها الإلكترونية فوراً بسبب انعدام الهواء والكثافة.", "ستعمل بكفاءة أعلى وتلتقط صوراً أوضح دون أي تأثير سلبي."] },
+                { q: "تحدث جميع الظواهر الجوية المتعلقة بالطقس والمناخ كالغيوم والأمطار والرياح في التروبوسفير. فسر عدم امتداد هذه الظواهر إلى طبقة الستراتوسفير.", correctText: "لأن التروبوسفير تحتوي على بخار الماء ومعظم كتلة الهواء والكثافة، بينما تعمل التروبوبوز كحاجز فاصل.", wrongOptions: ["لأن الستراتوسفير خالية تماماً من النيتروجين.", "لأن حرارة الستراتوسفير تصل لـ -93°C فتجمد كل السحب فوراً.", "بسبب انعدام الجاذبية فوق ارتفاع 10 كم."] },
+                { q: "يُسمى الجزء السفلي من الثرموسفير بالغلاف الأيوني (الأيونوسفير):", correctText: "لوجود معظم الغازات على شكل أيونات مشحونة كهربائياً.", wrongOptions: ["لأنها تحتوي على أيونات الحديد الصلب الفضائي.", "لأنها تفرز أيونات الماء العذب للأرض.", "نسبة إلى غاز النيون الخامل."] },
+                { q: "غاز الهيدروجين يُعتبر أخف الغازات كتلة. فسر ندرته في الغلاف الجوي المنخفض للأرض.", correctText: "لأن كتلة جزيء الهيدروجين صغيرة تجعل السرعة الفاعلة لجزيء الغاز عالية جداً وتقترب أو تتجاوز سرعة الإفلات فيسهل هروبه للطبقات العليا والفضاء.", wrongOptions: ["لأن الهيدروجين يتحد مع الأرجون ليكون ماءً مالحاً.", "لأن طبقة الأوزون تستهلك الهيدروجين بالكامل.", "لأن الجاذبية الأرضية تجذب الهيدروجين داخل نواة الأرض."] },
+                { q: "علل: انخفاض درجة الحرارة في طبقة التروبوسفير كلما ارتفعنا عن سطح الأرض.", correctText: "لأن سطح الأرض يمتص الإشعاع الشمسي ويسخن فيقوم بتسخين الهواء الملامس له، وكلما ارتفعنا لأعلى نبتعد عن مصدر الحرارة (سطح الأرض) ويقل الضغط وكثافة الهواء فتقل درجة الحرارة بمعدل 6.5°C لكل 1 كم.", wrongOptions: ["بسبب وجود طبقة الأوزون في قمة التروبوسفير التي تمتص الحرارة وتجمد الهواء.", "بسبب احتراق الشهب والنيازك في التروبوسفير مما يخفض درجة حرارتها.", "لأن أشعة الشمس لا تمر عبر طبقة التروبوسفير على الإطلاق."] },
+                { q: "تمثل طبقة الأوزون درعاً لا غنى عنه لحماية الحياة واستدامة الغلاف الحيوي. فسر هذا الدور الإشعاعي والبيولوجي.", correctText: "إشعاعياً: تمتص معظم الأشعة فوق البنفسجية الضارة القادمة من الشمس وتمنع وصولها للأرض | بيولوجياً: تحمي الكائنات الحية من تلف الحمض النووي (DNA) وسرطان الجلد وتدمير النباتات والعوالق البحرية.", wrongOptions: ["إشعاعياً: تعكس موجات الراديو للاتصالات | بيولوجياً: توفر غاز الهيدروجين لتنفس الإنسان.", "إشعاعياً: تحرق الشهب والنيازك | بيولوجياً: تسبب ظاهرة الشفق القطبي.", "إشعاعياً: تمنع وصول الضوء المرئي | بيولوجياً: توقف عملية البناء الضوئي."] },
+                { q: "طبقة الأوزون بالستراتوسفير تتكامل مع طبقة الميزوسفير في حماية الغلاف الحيوي. فسر هذه العبارة.", correctText: "حيث تحمي طبقة الأوزون (بالستراتوسفير) الكائنات الحية من الإشعاعات الضارة (الأشعة فوق البنفسجية)، بينما تحمي طبقة الميزوسفير الأرض من الأجسام المادية الفضائية الضارة عن طريق حرق الشهب والنيازك قبل وصولها لسطح الأرض.", wrongOptions: ["حيث تنتج الميزوسفير غاز الأكسجين وتقوم طبقة الأوزون بتحويله إلى ماء عذب.", "حيث تعكس الطبقتان موجات الراديو وتمنعان هروب الأقمار الصناعية للفضاء.", "حيث تخفض الطبقتان درجة حرارة الشمس قبل أن تصل إلى طبقة الإكسوسفير."] },
+                { q: "النتيجة المترتبة على الحركة الأفقية للهواء في طبقة الستراتوسفير هي:", correctText: "تُعتبر طبقة مفضلة لتحليق الطائرات لقلة الاضطرابات الجوية والعمودية.", wrongOptions: ["تُستغل حصرياً لوضع الأقمار الصناعية للاتصالات.", "تمنع حركة الطائرات تماماً وتسبب احتراقها.", "تؤدي إلى التشكيل الأفقي للأمطار والرعد."] },
+                { q: "السرعة الدنيا التي يجب أن ينطلق بها الصاروخ الفضائي المغادر للأرض لكي يخرج نهائياً من مجال الجاذبية الأرضية تساوي:", correctText: "11.2 Km/s", wrongOptions: ["2.2 Km/s", "7.2 Km/s", "1000 m/s"] },
+                { q: "ترتفع درجة الحرارة جداً على عطارد نهاراً ويبرد بسرعة شديدة ليلاً. فسر هذه التقلبات الحرارية الجسيمة.", correctText: "لعدم وجود غلاف جوي يحتفظ بالإشعاع الحراري ويعزل الكوكب.", wrongOptions: ["بسبب ثوران البراكين النيتروجينية ليلاً فقط.", "لأن سرعة دوران عطارد تساوي سرعة الضوء.", "بسبب وجود محيطات ملاحية واسعة على عطارد."] },
+                { q: "علل: يُعد التنوع الحيوي في طبقة التروبوسفير هو الأغنى بيولوجياً والأكثر نشاطاً على كوكب الأرض.", correctText: "لتوفر الظروف الملائمة للحياة فيها؛ حيث تحتوي على معظم كتلة الغلاف الجوي والغازات الحيوية اللازمة للتنفس والبناء الضوئي وبخار الماء (دورة الماء والأمطار)، بالإضافة إلى اعتدال درجات الحرارة والضغط الجوي.", wrongOptions: ["لأنها الطبقة الوحيدة التي تصل فيها درجة الحرارة إلى 2000°C.", "لأنها تخلو تماماً من بخار الماء والرياح والاضطرابات الجوية.", "لأنها تحتوي على طبقة الأيونوسفير التي تمد الكائنات بالطاقة الكهربائية."] },
+                { q: "ما العلاقة بين الأيونوسفير والشفق القطبي؟ ولماذا تُعد هذه الطبقة ضرورية لحدوث الظاهرة؟", correctText: "تحدث ظاهرة الشفق القطبي في طبقة الأيونوسفير (الثرموسفير) نتيجة اصطدام الجسيمات المشحونة القادمة من الشمس (الرياح الشمسية) بذرات وأيونات الغازات الموجودة في الأيونوسفير وإثارتها، وعند عودة الإلكترونات لمستوياتها الأرضية تطلق فوتونات ضوئية ملونة ساطعة.", wrongOptions: ["تمنع طبقة الأيونوسفير حدوث الشفق القطبي عن طريق امتصاص الرياح الشمسية وتحويلها لأمطار.", "تحدث ظاهرة الشفق القطبي في التروبوسفير وتنعكس صورتها على طبقة الأيونوسفير.", "تُعد الأيونوسفير ضرورية لأنها تحتوي على بخار الماء الذي يكسر ضوء القمر ليلاً."] },
+                { q: "قارن بين التروبوبوز والستراتوبوز من حيث الارتفاع وسلوك درجة الحرارة.", correctText: "التروبوبوز: يقع على ارتفاع حوالي 10-18 كم (متوسط 12 كم) وتثبت عنده درجة الحرارة عند أدنى قيمة للتروبوسفير (حوالي -60°C) | الستراتوبوز: يقع على ارتفاع 50 كم وتثبت عنده درجة الحرارة عند أعلى قيمة للستراتوسفير (حوالي 0°C).", wrongOptions: ["التروبوبوز: ارتفاعه 50 كم وحرارته 2000°C | الستراتوبوز: ارتفاعه 10 كم وحرارته -93°C.", "التروبوبوز: ارتفاعه 500 كم | الستراتوبوز: ارتفاعه 85 كم.", "كلاهما يقع على ارتفاع 50 كم وترتفع عندهما درجة الحرارة بسرعة فائقة."] },
+                { q: "أي العبارات التالية توصف الغلاف الجوي بأنه نظام ديناميكي؟", correctText: "لأن نسب غازاته وطاقته تتغير باستمرار بفعل عمليات طبيعية وبشرية متداخلة.", wrongOptions: ["لأنه يتكون من طبقة واحدة فقط.", "لأن مكوناته ثابتة لا تتغير.", "لأنه يتكون من النيتروجين فقط."] },
+                { q: "السلوك الحراري في التروبوسفير والستراتوسفير يتميز بـ:", correctText: "في التروبوسفير تنخفض الحرارة بالارتفاع، بينما في الستراتوسفير تثبت أولاً ثم ترتفع بالارتفاع.", wrongOptions: ["في التروبوسفير ترتفع الحرارة بالارتفاع، وفي الستراتوسفير تنخفض.", "كلاهما تتميز بثبات تام في درجات الحرارة.", "كلاهما تصل درجة الحرارة فيهما إلى 2000°C."] },
+                { q: "إذا كانت السرعة الفاعلة لجزيء غاز معين على كوكب هي 12 km/s وسرعة الإفلات لهذا الكوكب هي 11 km/s، فما المصير المتوقع لهذا الغاز؟", correctText: "سيفلت الغاز من جاذبية الكوكب إلى الفضاء الخارجي ويصبح نادراً أو غير موجود على الكوكب.", wrongOptions: ["سيزيد من ضغط الكوكب بمقدار 12 atm.", "سيستقر الغاز في طبقة التروبوسفير بتركيز 78%.", "سيتحول الغاز فوراً إلى غاز أوزون."] },
+                { q: "علل: تُعتبر طبقة التروبوسفير هي الطبقة الأكبر كثافة بين طبقات الغلاف الجوي؟ وما علاقة ذلك بالضغط الجوي؟", correctText: "لأنها الطبقة السفلى الملامسة لسطح الأرض فتجذب الجاذبية الأرضية إليها معظم كتلة الغلاف الجوي (حوالي 75% إلى 80% من كتلته) وبخار الماء؛ والعلاقة طردية مع الضغط الجوي، حيث يكون الضغط الجوي أكبر ما يمكن عند سطح الأرض ويقل بالارتفاع لأعلى لقلة الكثافة ووزن عمود الهواء.", wrongOptions: ["لأن درجة حرارتها تصل إلى 2000°C فتتمدد الغازات وتزداد كثافتها، ويقل الضغط الجوي عند سطح الأرض.", "لأنها تحتوي على طبقة الأوزون الثقيلة، ولا توجد أي علاقة بين الكثافة والضغط الجوي.", "لأنها أبعد طبقة عن الجاذبية الأرضية، ويزداد الضغط الجوي كلما ارتفعنا لأعلى."] },
+                { q: "احسب درجة الحرارة عند تحليق طائرة ركاب عند ارتفاع 6000 متر داخل طبقة التروبوسفير إذا كانت الحرارة عند السطح 20°C.", correctText: "الارتفاع بالكيلومتر = 6000 ÷ 1000 = 6 كم | مقدار الانخفاض في الحرارة = 6 × 6.5 = 39°C | درجة الحرارة عند الطائرة = 20 - 39 = -19°C.", wrongOptions: ["درجة الحرارة عند الطائرة = 20 + 39 = 59°C.", "درجة الحرارة عند الطائرة = 20 - 6 = 14°C.", "درجة الحرارة عند الطائرة = 39 - 20 = 19°C."] },
+                { q: "فسر: لماذا تُطلق الذرات المثارة في الأيونوسفير أضواء ساطعة بألوان مختلفة عند القطبين؟", correctText: "لأن المجال المغناطيسي للأرض يوجه الجسيمات الشمسية المشحونة نحو القطبين فتصطدم بذرات وأيونات الغازات المختلفة (مثل الأكسجين والنيتروجين) وتثيرها لمستويات طاقة متفاوتة، وعند عودتها لحالتها الأرضية تنطلق فوتونات ضوئية بأطوال موجية وألوان مختلفة (الأخضر والأحمر والبنفسجي).", wrongOptions: ["بسبب انعكاس ضوء الشمس على الجليد القطبي وتشتته في السحب الممطرة.", "بسبب احتراق الشهب والنيازك فوق القطبين فقط دون باقي مناطق الأرض.", "لأن طبقة الأوزون تتجمع فوق القطبين وتصدر إشعاعات ملونة ليلاً."] }
+            ]
+        };
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // متغيرات التحكم الأساسية في اللعبة (4 قلوب و 3 تخطيات بدون وقت)
+        let currentCategory = "التكيفات والغازات (1ث)";
+        let activeQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let lives = 4;
+        let skips = 3;
+        let isAnsweringBlocked = false;
+        let questionTimeout = null;
+
+        function setTheme(theme) {
+            document.body.className = `theme-${theme}`;
+            document.querySelectorAll(".theme-btn").forEach(btn => btn.classList.remove("active"));
+            const targetBtn = document.getElementById(`btn-theme-${theme}`);
+            if (targetBtn) targetBtn.classList.add("active");
+        }
+
+        function initCategoryTabs() {
+            const tabsContainer = document.getElementById("category-tabs");
+            tabsContainer.innerHTML = "";
+
+            const summaryBtn = document.createElement("button");
+            summaryBtn.className = `cat-btn summary-btn ${currentCategory === 'summary' ? 'active' : ''}`;
+            summaryBtn.innerText = "📚 كراسة التلخيص الشاملة (1ث)";
+            summaryBtn.onclick = () => openSummaryView();
+            tabsContainer.appendChild(summaryBtn);
+
+            Object.keys(rawQuestionBank).forEach(cat => {
+                const btn = document.createElement("button");
+                btn.className = `cat-btn ${cat === currentCategory ? 'active' : ''}`;
+                btn.innerText = cat;
+                btn.onclick = () => selectCategory(cat);
+                tabsContainer.appendChild(btn);
+            });
+        }
+
+        function openSummaryView() {
+            clearTimeout(questionTimeout);
+            isAnsweringBlocked = false;
+            currentCategory = "summary";
+            document.getElementById("game-view").style.display = "none";
+            document.getElementById("end-view").style.display = "none";
+            document.getElementById("calculator-modal").style.display = "none";
+            document.getElementById("summary-view").style.display = "block";
+            initCategoryTabs();
+            const firstSubBtn = document.querySelector(".sub-btn");
+            showSummaryTab('defs', firstSubBtn);
+        }
+
+        function returnToGame() {
+            document.getElementById("summary-view").style.display = "none";
+            document.getElementById("game-view").style.display = "block";
+            selectCategory("التكيفات والغازات (1ث)");
+        }
+
+        function showSummaryTab(tabKey, btnEl) {
+            document.querySelectorAll(".sub-btn").forEach(b => b.classList.remove("active"));
+            if (btnEl) {
+                btnEl.classList.add("active");
+            }
+
+            const contentDiv = document.getElementById("summary-content");
+            contentDiv.innerHTML = "";
+
+            const items = summaryData[tabKey] || [];
+            items.forEach(item => {
+                const box = document.createElement("div");
+                box.className = "summary-item";
+                let extraHtml = "";
+                if (item.formula) {
+                    extraHtml = `<div class="formula-box">${item.formula}</div>`;
+                }
+                box.innerHTML = `<h4>${item.title}</h4>${extraHtml}<p>${item.desc}</p>`;
+                contentDiv.appendChild(box);
+            });
+        }
+
+        // اختيار الكاتيجوري وإظهار شاشة البدء المخصصة له (بدون وقت)
+        function selectCategory(cat) {
+            if (isAnsweringBlocked) return;
+            clearTimeout(questionTimeout);
+            currentCategory = cat;
+            document.getElementById("summary-view").style.display = "none";
+            document.getElementById("end-view").style.display = "none";
+            document.getElementById("calculator-modal").style.display = "none";
+            document.getElementById("game-view").style.display = "block";
+
+            document.getElementById("btn-calc-toggle").style.display = "inline-block";
+
+            initCategoryTabs();
+
+            const qCount = rawQuestionBank[cat].length;
+
+            document.getElementById("cat-start-title").innerText = `قسم: ${cat}`;
+            document.getElementById("cat-start-info").innerHTML = `عدد الأسئلة في هذا القسم: <strong>${qCount} سؤالاً</strong> (شاملة جميع الأسئلة بدون وقت محدد)<br>لديك <strong>4 قلوب</strong> للمحاولة و <strong>3 تخطيات</strong>. هل أنت مستعد لخوض التحدي؟`;
+
+            document.getElementById("cat-start-screen").style.display = "block";
+            document.getElementById("quiz-active-area").style.display = "none";
+        }
+
+        // بدء الاختبار الفعلي للكاتيجوري
+        function startCategoryQuiz() {
+            document.getElementById("cat-start-screen").style.display = "none";
+            document.getElementById("quiz-active-area").style.display = "block";
+
+            activeQuestions = shuffleArray(rawQuestionBank[currentCategory]);
+            currentQuestionIndex = 0;
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnsweringBlocked = false;
+
+            if (currentQuestionIndex >= activeQuestions.length) {
+                activeQuestions = shuffleArray(rawQuestionBank[currentCategory]);
+                currentQuestionIndex = 0;
+            }
+
+            const rawQ = activeQuestions[currentQuestionIndex];
+            document.getElementById("question-text").innerText = rawQ.q;
+
+            const allOptions = shuffleArray([rawQ.correctText, ...rawQ.wrongOptions]);
+            const correctIndex = allOptions.indexOf(rawQ.correctText);
+
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
+
+            allOptions.forEach((opt, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(idx, btn, correctIndex);
+                optionsContainer.appendChild(btn);
+            });
+
+            updateStatusBar();
+        }
+
+        function checkAnswer(selectedIdx, btnElement, correctIndex) {
+            if (isAnsweringBlocked) return;
+            isAnsweringBlocked = true;
+
+            const allOptionButtons = document.querySelectorAll(".option-btn");
+
+            if (selectedIdx === correctIndex) {
+                btnElement.classList.add("correct");
+                score += 10;
+                playSound('correct');
+                confetti({ particleCount: 35, spread: 55, origin: { y: 0.8 } });
+            } else {
+                btnElement.classList.add("wrong");
+                allOptionButtons[correctIndex].classList.add("correct");
+                lives--;
+                playSound('wrong');
+            }
+
+            updateStatusBar();
+
+            questionTimeout = setTimeout(() => {
+                if (lives <= 0) {
+                    endGame('lives');
+                } else {
+                    currentQuestionIndex++;
+                    loadQuestion();
+                }
+            }, 1300);
+        }
+
+        function skipQuestion() {
+            if (isAnsweringBlocked || skips <= 0) return;
+            skips--;
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function updateStatusBar() {
+            document.getElementById("score-val").innerText = score;
+            document.getElementById("lives-val").innerText = `${lives}/4`;
+            document.getElementById("skips-val").innerText = `${skips}/3`;
+
+            const skipBtn = document.getElementById("btn-skip");
+            if (skips <= 0) {
+                skipBtn.style.opacity = "0.5";
+                skipBtn.style.cursor = "not-allowed";
+            } else {
+                skipBtn.style.opacity = "1";
+                skipBtn.style.cursor = "pointer";
+            }
+        }
+
+        function endGame(reason = 'normal') {
+            clearTimeout(questionTimeout);
+            isAnsweringBlocked = false;
+            playSound('win');
+            document.getElementById("game-view").style.display = "none";
+            document.getElementById("summary-view").style.display = "none";
+            document.getElementById("calculator-modal").style.display = "none";
+            document.getElementById("end-view").style.display = "block";
+
+            document.getElementById("final-score-val").innerText = `${score} نقطة`;
+
+            let evalText = "";
+            if (reason === 'lives') {
+                evalText = "❤️ لقد استنفدت محاولاتك الأربعة! أداء بطولي ومثابرة رائعة، راجع كراسة التلخيص لتعود أقوى.";
+            }
+
+            if (score >= 150) {
+                evalText += (evalText ? "<br>" : "") + "🌟 ما شاء الله تبارك الله! عبقري متوج في العلوم المتكاملة (1ث) ومستوى استثنائي يشرف معلمك!";
+                confetti({ particleCount: 150, spread: 100 });
+            } else if (score >= 80) {
+                evalText += (evalText ? "<br>" : "") + "👏 بطل متميز وذكي جداً! مستوى رائع في العلوم المتكاملة (1ث)، جهد يستحق التقدير والإعجاب.";
+            } else {
+                evalText += (evalText ? "<br>" : "") + "💪 عاش يا بطل! بداية واعدة ومجهود مقدّر جداً، راجع كراسة التلخيص وستحقق أعلى الدرجات بإذن الله.";
+            }
+
+            document.getElementById("evaluation-text").innerHTML = evalText;
+        }
+
+        function downloadResultImage() {
+            const card = document.getElementById("export-card");
+            html2canvas(card, { scale: 2.5 }).then(canvas => {
+                const link = document.createElement("a");
+                link.download = `نتيجة_العلوم_المتكاملة_1ث_${score}_نقطة.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+
+        function shareWhatsApp() {
+            const text = `حققتُ ${score} نقطة في تحدي العلوم المتكاملة (الصف الأول الثانوي 1ث)! 🏆\nتحت إشراف الأستاذ: عبد الرحمن عبد الله (01021779644).\nهل تستطيع كسر هذا الرقم؟`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareFacebook() {
+            const text = `أنهيتُ بنجاح مسابقة العلوم المتكاملة (الصف الأول الثانوي 1ث) وحققتُ ${score} نقطة! 🚀\nتصميم وإعداد الأستاذ: عبد الرحمن عبد الله - 01021779644`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("تم نسخ نص النتيجة بنجاح! يمكنك الآن لصقها في بوست على فيسبوك.");
+            });
+        }
+
+        function restartGame() {
+            clearTimeout(questionTimeout);
+            isAnsweringBlocked = false;
+            score = 0;
+            lives = 4;
+            skips = 3;
+            calcClear();
+            document.getElementById("end-view").style.display = "none";
+            document.getElementById("summary-view").style.display = "none";
+            document.getElementById("calculator-modal").style.display = "none";
+            document.getElementById("game-view").style.display = "block";
+            selectCategory("التكيفات والغازات (1ث)");
+        }
+
+        // دوال الآلة الحاسبة
+        let calcVal = "0";
+        function toggleCalculator() {
+            const modal = document.getElementById("calculator-modal");
+            modal.style.display = modal.style.display === "block" ? "none" : "block";
+        }
+        function calcInput(char) {
+            if (calcVal === "0" && char !== ".") {
+                calcVal = char;
+            } else {
+                calcVal += char;
+            }
+            document.getElementById("calc-display").value = calcVal;
+        }
+        function calcClear() {
+            calcVal = "0";
+            document.getElementById("calc-display").value = calcVal;
+        }
+        function calcBackspace() {
+            calcVal = calcVal.slice(0, -1);
+            if (calcVal === "") calcVal = "0";
+            document.getElementById("calc-display").value = calcVal;
+        }
+        function calcCalculate() {
+            try {
+                const res = Function('"use strict";return (' + calcVal + ')')();
+                calcVal = String(Number(res.toFixed(4)));
+                document.getElementById("calc-display").value = calcVal;
+            } catch (err) {
+                document.getElementById("calc-display").value = "خطأ";
+                calcVal = "0";
+            }
+        }
+
+        window.onload = () => {
+            setTheme('dark');
+            selectCategory("التكيفات والغازات (1ث)");
+            document.body.addEventListener('click', () => getAudioContext(), { once: true });
+        };
+    </script>
+</body>
+</html>
